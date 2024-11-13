@@ -12,7 +12,7 @@ He diseñado una placa nueva inspirada en la placa con Rp2040 Zero de **Destroye
 ![PcB](./images/IMG_20241110_194500.jpg)
 ![Esquema](./images/Ps2x2pico&joySticksEsquema.jpg)
 
-Cuando la vi pense que lastima no aprovechar los pines que sobran.... y este es el resultado esta en fase beta, pero en princio es funcional, falta trabajo por hacer, configurar las teclas del puerto de joystick 2, ahora  los dos puertos son emuladas las pulsaciones de las mismas teclas, cursores para movimiento y TAB para disparo igual es indistinto usar uno o otro conector, dar soporte para gamepad de sega de tres y seis botones al igual que el proyecto de  **David Carrion** (  **https://github.com/dacarsoft/DB9_2_Keyboard** ) 
+Cuando la vi pense que lastima no aprovechar los pines que sobran.... y este es el resultado esta en fase beta, pero en princio es funcional, mapeadas las teclas de cursores para las direcciones y la tecla TAB para el disparo en el joy1, y las teclas 6,7,8,9,0 en el joy 2,pendiente dar soporte para gamepad de sega de tres y seis botones al igual que el proyecto de  **David Carrion** (  **https://github.com/dacarsoft/DB9_2_Keyboard** ) 
 o el fork del mismo de **Antonio Taimaron**, PowaJoy ( **https://github.com/hash6iron/PowaJoy**), el soporte para gamepad usb esta empezado, como puede verse en el codigo, pero no es apena usable, congela el emulador ESPectrum.
 
 
@@ -21,8 +21,8 @@ En la carpeta PCB se pueden encontrar los pdf generados con eagle para quien qui
 
 Para compilar, en pricipio instalar en vscode la extensión oficial Raspberry Pi Pico`v0.17.1`y seguir las instrucciones que se pueden encontar en la pagina de https://github.com/No0ne/ps2x2pico.
 
-Copiar el fichero 20241110_ps2x2pico.uf2 situado en el directorio build en la raiz del Rp2040 Zero, pulsar boton boot y conectar al usb.
+Copiar el fichero  .uf2 situado en el directorio release en la raiz del Rp2040 Zero, pulsar boton boot y conectar al usb.
 
-**https://github.com/TuriSc/RP2040-Button**
+Librerias usadas: **https://github.com/TuriSc/RP2040-Button**
 
 **LeoCroms@2024**

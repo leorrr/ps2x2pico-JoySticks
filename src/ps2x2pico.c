@@ -89,7 +89,12 @@ u8 kb_inst = 0;
 u8 kb_leds = 0;
 char device_str[50];
 char manufacturer_str[50];
+/*Codigos teclas mas comunes, u8 keycode - from "tinyusb/src/class/hid/hid.h"  HID_KEY_ definition   
+0x1e (1),0x1f (2),0x20 (3), 0x21 (4), 0x22 (5), 0x23 (6), 0x24 (7), 0x25 (8), 0x26 (9), 0x27 (0)
+0x14 (q), 0x04 (a), 0x12 (o), 0x13 (p), 0x28 (Enter), 0x29 (ESC), 0x2c (SPACE)
+0x52 (cursor arriba), 0x51 (cursor abajo), 0x50 (cursor izquierda), 0x4f (cursor derecha), 0x2b (TAB)
 
+*/
 // Rutina control jopystick's
 void onchange(button_t *button_p) {
   button_t *button = (button_t*)button_p;
@@ -111,7 +116,7 @@ void onchange(button_t *button_p) {
         printf("Joy1Down release\n");
     break;
     case joy1Left:
-        kb_send_key(0x50, 0, 0); //0x50 cursor izquiera
+        kb_send_key(0x50, 0, 0); //0x50 cursor izquierda
         printf("Joy1Left release\n");
     break;
     case joy1Right:
@@ -123,24 +128,26 @@ void onchange(button_t *button_p) {
         printf("Joy1Fire release \n");
     break;
 //comprobamos el joy2 si hemos soltado un boton
+// Mapeamos la norma sinclaer para el joystick 1 que corresponden 
+// a las teclas 6,7,8,9,0
    case joy2Up:
-        kb_send_key(0x52, 0, 0); //0x52 cursor arriba
+        kb_send_key(0x26, 0, 0); //0x26 tecla 9
         printf("Joy2Up release\n");
     break;
     case joy2Down:
-        kb_send_key(0x51, 0, 0); //*x51 cursor abajo
+        kb_send_key(0x25, 0, 0); //0x25 tecla 8
         printf("Joy2Down release\n");
     break;
     case joy2Left:
-        kb_send_key(0x50, 0, 0); // 0x50 cursor izquierda
+        kb_send_key(0x23, 0, 0); // 0x23 tecla 6
         printf("Joy2Left release\n");
     break;
     case joy2Right:
-        kb_send_key(0x4f, 0, 0); // 0x4f cursor derecha
+        kb_send_key(0x24, 0, 0); // 0x24 tecla 7
         printf("Joy2Right release\n");
     break;
     case joy2Fire:
-        kb_send_key(0x2b, 0, 0); //0x2b Tabulador
+        kb_send_key(0x27, 0, 0); //0x27 tecla 0
         printf("Joy2Fire release \n");
     break; 
   }
@@ -154,11 +161,11 @@ void onchange(button_t *button_p) {
 
    //comprobamos el joy1 si hemos pulsado un boton 
     case joy1Up:
-        kb_send_key(0x52, 1, 0); // 0x52 cursor arriba
+        kb_send_key(0x52, 1, 0); // 0x52 cursor arriba 
         printf("Joy1Up \n");
     break;
     case joy1Down:
-        kb_send_key(0x51, 1, 0); // 0x51 cursor abajo
+        kb_send_key(0x51, 1, 0); // 0x51 cursor abajo 
         printf("Joy1Down\n");
     break;
     case joy1Left:
@@ -173,25 +180,27 @@ void onchange(button_t *button_p) {
         kb_send_key(0x2b, 1, 0);// 0x2b tabulador
         printf("Joy1Fire\n");
     break;
-//comprobamos el joy2 si hemos pulsado un boton
+//comprobamos el joy2 si hemos pulsado un boton 
+// Mapeamos la norma sinclaer para el joystick 1 que corresponden 
+// a las teclas 6,7,8,9,0
   case joy2Up:
-        kb_send_key(0x52, 1, 0); // 0x52 cursor arriba
+        kb_send_key(0x26, 1, 0); // //0x26 tecla 9
         printf("Joy2Up \n");
     break;
     case joy2Down:
-        kb_send_key(0x51, 1, 0); // 0x51 cursor abajo
+        kb_send_key(0x25, 1, 0); //0x25 tecla 8
         printf("Joy2Down\n");
     break;
     case joy2Left:
-        kb_send_key(0x50, 1, 0);// 0x50 cursor izquierda
+        kb_send_key(0x23, 1, 0);// 0x23 tecla 6
         printf("Joy2Left\n");
     break;
     case joy2Right:
-        kb_send_key(0x4f, 1, 0);// 0x4f cursor derecha
+        kb_send_key(0x24, 1, 0);// 0x24 tecla 7
         printf("Joy2Right\n");
     break;
     case joy2Fire:
-        kb_send_key(0x2b, 1, 0);// 0x2b tabulador
+        kb_send_key(0x27, 1, 0);//0x27 tecla 0
         printf("Joy2Fire\n");
     break;
   }
@@ -440,16 +449,25 @@ void main() {
   button_t *Joy1Left = create_button(joy1Left, onchange);
   button_t *Joy1Right = create_button(joy1Right, onchange);
   button_t *Joy1Fire = create_button(joy1Fire, onchange);
-  button_t *Joy1Select = create_button(joy1Select, onchange);
-  button_t *Joy1Start = create_button(joy1Start, onchange);
+
+  //Se usa en el mando sega para comprobrar botones extra, hay que ponerla a 0 o 1 de modo manual y hacer a continuacion la lectura
+  //de momento la desactivamos
+  //button_t *Joy1Select = create_button(joy1Select, onchange); 
+
+  button_t *Joy1Start = create_button(joy1Start, onchange); // o tambien conocido como fire2
+
 // Joystick 2
   button_t *Joy2Up = create_button(joy2Up, onchange);
   button_t *Joy2Down = create_button(joy2Down, onchange);
   button_t *Joy2Left = create_button(joy2Left, onchange);
   button_t *Joy2Right = create_button(joy2Right, onchange);
   button_t *Joy2Fire = create_button(joy2Fire, onchange);
-  button_t *Joy2Select = create_button(joy2Select, onchange);
-  button_t *Joy2Start = create_button(joy2Start, onchange);
+
+  //Se usa en el mando sega para comprobrar botones extra, hay que ponerla a 0 o 1 de modo manual y hacer a continuacion la lectura
+  //de momento la desactivamos
+  //button_t *Joy2Select = create_button(joy2Select, onchange); 
+  
+  button_t *Joy2Start = create_button(joy2Start, onchange); // o tambien conocido como fire2
 
   while(1) {
     tuh_task();

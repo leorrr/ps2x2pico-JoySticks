@@ -52,7 +52,7 @@
 #define joy2Select 9  // Para joyStick SEGA
 #define joy2Start 1  // Para joyStick SEGA
 
-/*Este bloque de momento tampoco se usa 
+
 // El estado de los botones es normalmente 1, y cuando se pulsan 0, porque estan activados los pullUp internos
 // creamos una variable por cada boton para guardar el ultimo estado actual del boton al ser pulsado o liberado
 
@@ -71,7 +71,7 @@ bool joy2Right_state =1;
 bool joy2Fire_state =1;
 bool joy2Select_state =1;
 bool joy2Start_state =1;
-*/
+
 
 
 
@@ -351,6 +351,7 @@ void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 
 
     case HID_ITF_PROTOCOL_NONE: 
 
+    
     //Todo esto son pruebas y de momento funciona a medias y mal
      #ifdef TRACE
       printf("HID_MS(%d,%d): r[2..7]={0x%x,0x%x,0x%x,0x%x,0x%x,0x%x},r[0]=0x%x,l=%d\n",
@@ -366,63 +367,73 @@ void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 
        //u8 report2[]={0,0,0x2b,0,0,0,0};
        //u8 report3[]={0,0,0,0,0,0,0,0};
        //uint32_t tiempo1=myMillis;
-      
-       if (report[5]>15){//disparo
-        
-        //printf("none report:      %d,%d,%d,%d,%d,%d,%d  len:%x     \n",report[0],report[1],report[2],report[3],report[4],report[5],report[6],len);
-        
-        kb_send_key(0x2b, 1, 0);
-        sleep_ms(50);
-        kb_send_key(0x2b, 0, 0);
-        //tuh_hid_receive_report(dev_addr, instance);
-         
-       }
 
-       if (report[3]==0){//izquierda
-        //kb_usb_receive(report2, 2);
+      //disparo
+       if (report[5]>15 && joy1Fire_state==1){kb_send_key(0x2b, 1, 0);}   
         //printf("none report:      %d,%d,%d,%d,%d,%d,%d  len:%x     \n",report[0],report[1],report[2],report[3],report[4],report[5],report[6],len);
-        //kb_usb_receive(report3, 0);
-        kb_send_key(0x50, 1, 0);
-        sleep_ms(50);
-        kb_send_key(0x50, 0, 0);
-        //tuh_hid_receive_report(dev_addr, instance);
-         
-       }
+        //sleep_ms(50);
+        //kb_send_key(0x2b, 0, 0);
+        //tuh_hid_receive_report(dev_addr, instance);        
+       else if (report[5]==15 && joy1Fire_state==1){kb_send_key(0x2b, 0, 0);joy1Fire_state=0;}
 
-       if (report[3]==255){//Derecha
-        //kb_usb_receive(report2, 2);
-        //printf("none report:      %d,%d,%d,%d,%d,%d,%d  len:%x     \n",report[0],report[1],report[2],report[3],report[4],report[5],report[6],len);
-        //kb_usb_receive(report3, 0);
-        kb_send_key(0x4f, 1, 0);
-        sleep_ms(50);
-        kb_send_key(0x4f, 0, 0);
-        //tuh_hid_receive_report(dev_addr, instance);
-         
-       }
-
+       if (report[5]>15 && joy1Fire_state==0){kb_send_key(0x2b, 1, 0);joy1Fire_state=1;}
        
-       if (report[4]==0){//arriba
+      //izquierda
+       if (report[3]==0 && joy1Left_state==1){kb_send_key(0x50, 1, 0);} 
         //kb_usb_receive(report2, 2);
         //printf("none report:      %d,%d,%d,%d,%d,%d,%d  len:%x     \n",report[0],report[1],report[2],report[3],report[4],report[5],report[6],len);
         //kb_usb_receive(report3, 0);
-        kb_send_key(0x52, 1, 0);
-        sleep_ms(50);
-        kb_send_key(0x52, 0, 0);
+        //kb_send_key(0x50, 1, 0);
+        //sleep_ms(50);
+        //kb_send_key(0x50, 0, 0);
         //tuh_hid_receive_report(dev_addr, instance);
-        
-       }
+       else if (report[3]==127 && joy1Left_state==1){kb_send_key(0x50, 0, 0);joy1Left_state=0;}
+
+       if (report[3]==0 && joy1Left_state==0){kb_send_key(0x50, 1, 0);joy1Left_state=1;}  
        
-      if (report[4]==255){//abajo
+        //Derecha
+       if (report[3]==255 && joy1Right_state==1){kb_send_key(0x4f, 1, 0);} 
         //kb_usb_receive(report2, 2);
         //printf("none report:      %d,%d,%d,%d,%d,%d,%d  len:%x     \n",report[0],report[1],report[2],report[3],report[4],report[5],report[6],len);
         //kb_usb_receive(report3, 0);
-        kb_send_key(0x51, 1, 0);
-        sleep_ms(50);
-        kb_send_key(0x51, 0, 0);
+        //kb_send_key(0x4f, 1, 0);
+        //sleep_ms(50);
+        //kb_send_key(0x4f, 0, 0);
         //tuh_hid_receive_report(dev_addr, instance);
+       else if (report[3]==127 && joy1Right_state==1){kb_send_key(0x4f, 0, 0);joy1Right_state=0;}
+
+       if (report[3]==255 && joy1Right_state==0){kb_send_key(0x4f, 1, 0);joy1Right_state=1;}  
+       
+
+       //arriba
+       if (report[4]==0 && joy1Up_state==1){kb_send_key(0x52, 1, 0);} 
+        //kb_usb_receive(report2, 2);
+        //printf("none report:      %d,%d,%d,%d,%d,%d,%d  len:%x     \n",report[0],report[1],report[2],report[3],report[4],report[5],report[6],len);
+        //kb_usb_receive(report3, 0);
+        //kb_send_key(0x52, 1, 0);
+        //sleep_ms(50);
+        //kb_send_key(0x52, 0, 0);
+        //tuh_hid_receive_report(dev_addr, instance);
+       else if (report[4]==127 && joy1Up_state==1){kb_send_key(0x52, 0, 0);joy1Up_state=0;}
+
+       if (report[4]==0 && joy1Up_state==0){kb_send_key(0x52, 1, 0);joy1Up_state=1;}  
         
-       }
+       
+       //abajo
+      if (report[4]==255 && joy1Down_state==1){kb_send_key(0x51, 1, 0);} 
+        //kb_usb_receive(report2, 2);
+        //printf("none report:      %d,%d,%d,%d,%d,%d,%d  len:%x     \n",report[0],report[1],report[2],report[3],report[4],report[5],report[6],len);
+        //kb_usb_receive(report3, 0);
+        //kb_send_key(0x51, 1, 0);
+        //sleep_ms(50);
+        //kb_send_key(0x51, 0, 0);
+        //tuh_hid_receive_report(dev_addr, instance);
+     else if (report[4]==127 && joy1Down_state==1){kb_send_key(0x51, 0, 0);joy1Down_state=0;}
+
+     if (report[4]==255 && joy1Down_state==0){kb_send_key(0x51, 1, 0);joy1Down_state=1;}     
+     sleep_ms(80);  
     tuh_hid_receive_report(dev_addr, instance);
+    
     break;
 
   }

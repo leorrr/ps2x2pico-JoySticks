@@ -1,3 +1,5 @@
 20241110 Lanzamiento inicial, mapeado cursores y tabulador, en ambos joysticks
 
 20241113 Configurado segundo joystick, como sinclair 1 se mapean teclas 6,7,8,9,0, eliminado definicion del pin select temporalmente, usado en joys Sega Genesis, para controlar las lecturas de los botones extras, añadido comentarios en el codigo y creación de una wiki en el repositorio, para reunir información de ayuda sobre el tema joysticks.
+
+20250129 Mejorado soporte para uso de gamepad usb

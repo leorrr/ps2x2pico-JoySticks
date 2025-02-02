@@ -79,7 +79,7 @@ void gamePad_usb_receive(u8 const* report) {
        else if (report[5]==15 && joy1X_state==1){/*kb_send_key(0x52, 0, 0);*/Esp_code_send(ESP_JOY1X,0);joy1X_state=0;}
        if (report[5]==31 && joy1X_state==0){/*kb_send_key(0x52, 1, 0);*/Esp_code_send(ESP_JOY1X,1);joy1X_state=1;}  
 
-/boton Y
+//boton Y
        if (report[5]==143 && joy1Y_state==1){/*kb_send_key(0x29, 1, 0);*/Esp_code_send(ESP_JOY1Y,1);}          
        else if (report[5]==15 && joy1Y_state==1){/*kb_send_key(0x29, 0, 0);*/Esp_code_send(ESP_JOY1Y,0);joy1Y_state=0;}
        if (report[5]==143 && joy1Y_state==0){/*kb_send_key(0x29, 1, 0);*/Esp_code_send(ESP_JOY1Y,1);joy1Y_state=1;}

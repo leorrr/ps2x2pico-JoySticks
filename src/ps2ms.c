@@ -211,12 +211,12 @@ void ms_receive(u8 byte, u8 prev_byte) {
 
 bool ms_task() {
   ps2out_task(&ms_out);
-  ps2in_task(&ms_in, &ms_out);
+  //ps2in_task(&ms_in, &ms_out);
   return ms_streaming && !ms_out.busy;
 }
 
 void ms_init(u8 gpio_out, u8 gpio_in) {
   ps2out_init(&ms_out, pio0, gpio_out, &ms_receive);
-  ps2in_init(&ms_in, pio1, gpio_in);
+  //ps2in_init(&ms_in, pio1, gpio_in);
   ms_reset_callback();
 }

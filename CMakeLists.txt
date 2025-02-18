@@ -38,6 +38,7 @@ add_executable(ps2x2pico src/ps2x2pico.c src/scancodesets.c src/ps2kb.c src/ps2m
 
 pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ps2out.pio)
 pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ps2in.pio)
+pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ws2812.pio  OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 
 ### PS/2 output
 add_compile_definitions(LVOUT=13) # Level shifter pull-up voltage

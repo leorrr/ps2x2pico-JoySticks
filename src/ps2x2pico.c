@@ -34,6 +34,25 @@
 #include "ps2x2pico.h"
 #include "button.h"
 
+//neopixel
+#include "hardware/pio.h"
+#include "hardware/clocks.h"
+#include "ws2812.pio.h"
+int sm;
+PIO pio;
+#define neopixel 16
+void put_pixel(uint32_t pixel_grb)
+{
+    //pio_sm_put_blocking(pio0, sm, pixel_grb << 8u);
+    pio_sm_put_blocking(pio, sm, pixel_grb << 8u);
+}
+void put_rgb(uint8_t red, uint8_t green, uint8_t blue)
+{
+    uint32_t mask = (green << 16) | (red << 8) | (blue << 0);
+    put_pixel(mask);
+}
+
+//
 
 //
 #define joy1Up 2 
@@ -278,6 +297,7 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
           kb_inst = instance;
       }
       //board_led_write(1); //desabilitamos el led, porque la rp2040-zero, no tiene led y es tonteria
+       put_rgb(0x00, 0x00, 0xff);
     }
   }
 }
@@ -285,7 +305,7 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
 void tuh_hid_umount_cb(u8 dev_addr, u8 instance) {
   printf("HID(%d,%d) unmounted\n", dev_addr, instance);
   //board_led_write(0); //desabilitamos el led, porque la rp2040-zero, no tiene led y es tonteria
-  
+   put_rgb(0x00, 0x00, 0x00);
   if(dev_addr == kb_addr && instance == kb_inst) {
     kb_addr = 0;
     kb_inst = 0;
@@ -364,12 +384,19 @@ void main() {
   printf("\n%s-%s\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING);
   
   gpio_init(LVOUT);
-  gpio_init(LVIN);
+  //gpio_init(LVIN);
   gpio_set_dir(LVOUT, GPIO_OUT);
-  gpio_set_dir(LVIN, GPIO_OUT);
+  //gpio_set_dir(LVIN, GPIO_OUT);
   gpio_put(LVOUT, 1);
-  gpio_put(LVIN, 1);
+  //gpio_put(LVIN, 1);
   
+//neopixel
+pio = pio1;
+int sm= pio_claim_unused_sm(pio, true); //proporciona una stateMachine libre
+uint offset = pio_add_program(pio, &ws2812_program);
+ws2812_program_init(pio, sm, offset, neopixel, 800000, true);
+//neopixel
+
   tusb_init();
   kb_init(KBOUT, KBIN);
   ms_init(MSOUT, MSIN);

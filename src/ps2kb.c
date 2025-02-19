@@ -628,13 +628,13 @@ void kb_receive(u8 byte, u8 prev_byte) {
 
 bool kb_task() {
   ps2out_task(&kb_out);
-  ps2in_task(&kb_in, &kb_out);
+ // ps2in_task(&kb_in, &kb_out);
   return kb_enabled && !kb_out.busy;// TODO: return value can probably be void
 }
 
 void kb_init(u8 gpio_out, u8 gpio_in) {
   ps2out_init(&kb_out, pio0, gpio_out, &kb_receive);
-  ps2in_init(&kb_in, pio1, gpio_in);
+  //ps2in_init(&kb_in, pio1, gpio_in);
   kb_set_defaults();
   kb_send(KB_MSG_SELFTEST_PASSED_AA);
 }

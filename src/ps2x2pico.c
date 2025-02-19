@@ -51,8 +51,7 @@ void put_rgb(uint8_t red, uint8_t green, uint8_t blue)
     uint32_t mask = (green << 16) | (red << 8) | (blue << 0);
     put_pixel(mask);
 }
-
-//
+//neopixel
 
 //
 #define joy1Up 2 
@@ -390,17 +389,19 @@ void main() {
   gpio_put(LVOUT, 1);
   //gpio_put(LVIN, 1);
   
-//neopixel
-pio = pio1;
-int sm= pio_claim_unused_sm(pio, true); //proporciona una stateMachine libre
-uint offset = pio_add_program(pio, &ws2812_program);
-ws2812_program_init(pio, sm, offset, neopixel, 800000, true);
-//neopixel
+
 
   tusb_init();
   kb_init(KBOUT, KBIN);
   ms_init(MSOUT, MSIN);
   
+//neopixel
+  pio = pio1;
+  int sm= pio_claim_unused_sm(pio, true); //proporciona una stateMachine libre
+  uint offset = pio_add_program(pio, &ws2812_program);
+  ws2812_program_init(pio, sm, offset, neopixel, 800000, true);
+//neopixel
+
   //Joystick 1
   button_t *Joy1Up = create_button(joy1Up, onchange);
   button_t *Joy1Down = create_button(joy1Down, onchange);

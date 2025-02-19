@@ -16,4 +16,5 @@
 	 - Gatillo L tecla F2
 	 - Gatillo R tecla F5
 
-20250131ps2x2picoESPectrumKeyCodes: Versión especial para usar con el sistema de mapeado de JoySticks de emulador ESPespectrum
+20250131ps2x2picoESPectrumKeyCodes: Versión especial para usar con el sistema de mapeado de JoySticks de emulador ESPespectrum.
+20250219ps2x2picoESPectrumKeyCode: Añadido soporte neopixel

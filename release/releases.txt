@@ -1,8 +1,22 @@
 20241110 Lanzamiento inicial, mapeado cursores y tabulador, en ambos joysticks
 
 20241113 Configurado segundo joystick, como sinclair 1 se mapean teclas 6,7,8,9,0, eliminado definicion del pin select temporalmente, usado en joys Sega Genesis, para controlar las lecturas de los botones extras, añadido comentarios en el codigo y creación de una wiki en el repositorio, para reunir información de ayuda sobre el tema joysticks.
+	Testeado:
+		- Teclado: ok
+		- Raton: ok ( pero...si se arranca el emulador con el joystick 1 conectado, el raton no funciona)
+		- joystick1: ok
+		- joystick2: no probado
 
-20250129 Mejorado soporte para uso de gamepad usb
+20250129 Soporte para uso de gamepad usb
+	Testeado:
+		- Teclado: ok
+		- joystick1: ok
+		- gamepad Usb: ok (mapaeado direccionesen teclas de CURSOR y disparo en TABULADOR)
+		- Raton: no funciona
+
+Errores conocidos: si se arranca el emulador con el joystick conectado el teclado no funciona
+
+
 
 20250130 Añadido soporte para GamePad USB imitacion  Nintendo Snes, mapeando los botones de la siguiente manera:
 	 
@@ -16,5 +30,33 @@
 	 - Gatillo L tecla F2
 	 - Gatillo R tecla F5
 
+	Testeado:
+
+		-Teclado: ok
+		- gamepad: ok
+		- joystick : ok
+		- raton : no funciona
+Problemas conocidos:
+ - a veces se queda activada alguna direccion y hay que enchufar de nuevo el emulador
+ - si se arranca con el joystick enchufado no funciona la placa se queda en modo reset continuo
+
 20250131ps2x2picoESPectrumKeyCodes: Versión especial para usar con el sistema de mapeado de JoySticks de emulador ESPespectrum.
+
+	Testeado:
+
+		-Teclado: ok
+		- gamepad: ok
+		- joystick : ok
+		- raton : no funciona
+
 20250219ps2x2picoESPectrumKeyCode: Añadido soporte neopixel
+	Testeado:
+
+		- Teclado: ok
+		- gamepad: ok
+		- joystick : ok ( a veces se queda activada alguna direccion y hay que enchufar de nuevo el emulador)
+		- ratón : no funciona
+
+Definitivamente hay que reprogramar el soporte para joystick desde cero, es inusable y reparar el problema con el ratón
+Problemas conocidos:
+ - si se arranca con el joystick enchufado no funciona la placa se queda en modo reset continuo

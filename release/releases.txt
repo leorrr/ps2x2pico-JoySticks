@@ -12,10 +12,11 @@
 		- Teclado: ok
 		- joystick1: ok
 		- gamepad Usb: ok (mapaeado direccionesen teclas de CURSOR y disparo en TABULADOR)
-		- Raton: no funciona
+		- ratón : ok (pero para poder usar no puede haber un gamepad conectado al hub, solo teclado y ratón)
 
-Errores conocidos: si se arranca el emulador con el joystick conectado el teclado no funciona
-
+Errores conocidos: 
+ - si se arranca el emulador con el joystick conectado el teclado no funciona
+ - para poder usar el mouse, no puede haber un GAMEPAD conectado al hub, solo el teclado y el mouse, y aconsejable reiniciar si no lo detecta)
 
 
 20250130 Añadido soporte para GamePad USB imitacion  Nintendo Snes, mapeando los botones de la siguiente manera:
@@ -32,13 +33,14 @@ Errores conocidos: si se arranca el emulador con el joystick conectado el teclad
 
 	Testeado:
 
-		-Teclado: ok
+		- Teclado: ok
 		- gamepad: ok
 		- joystick : ok
-		- raton : no funciona
+		- ratón : ok (pero para poder usar no puede haber un gamepad conectado al hub, solo teclado y ratón)
 Problemas conocidos:
  - a veces se queda activada alguna direccion y hay que enchufar de nuevo el emulador
  - si se arranca con el joystick enchufado no funciona la placa se queda en modo reset continuo
+ - para poder usar el mouse, no puede haber un GAMEPAD conectado al hub, solo el teclado y el mouse, y aconsejable reiniciar si no lo detecta)
 
 20250131ps2x2picoESPectrumKeyCodes: Versión especial para usar con el sistema de mapeado de JoySticks de emulador ESPespectrum.
 
@@ -47,7 +49,7 @@ Problemas conocidos:
 		-Teclado: ok
 		- gamepad: ok
 		- joystick : ok
-		- raton : no funciona
+		- ratón : ok (pero para poder usar no puede haber un gamepad conectado al hub, solo teclado y ratón)
 
 20250219ps2x2picoESPectrumKeyCode: Añadido soporte neopixel
 	Testeado:
@@ -55,8 +57,8 @@ Problemas conocidos:
 		- Teclado: ok
 		- gamepad: ok
 		- joystick : ok ( a veces se queda activada alguna direccion y hay que enchufar de nuevo el emulador)
-		- ratón : no funciona
-
+		- ratón : ok (pero para poder usar no puede haber in gamepad conectado al hub)
 Definitivamente hay que reprogramar el soporte para joystick desde cero, es inusable y reparar el problema con el ratón
 Problemas conocidos:
  - si se arranca con el joystick enchufado no funciona la placa se queda en modo reset continuo
+ - para poder usar el mouse, no puede haber un GAMEPAD conectado al hub, solo el teclado y el mouse, y aconsejable reiniciar si no lo detecta)

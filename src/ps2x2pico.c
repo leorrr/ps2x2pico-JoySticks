@@ -34,36 +34,8 @@
 #include "ps2x2pico.h"
 #include "button.h"
 
-//neopixel
-//defimos unos cuantos colores
-#define rojo put_rgb(0xff, 0x00, 0x00)
-#define verde put_rgb(0xff, 0xff, 0x00)
-#define azul put_rgb(0x00, 0x00, 0xff)
-#define violeta put_rgb(0xda, 0x05, 0xf8)
-#define negro put_rgb(0x00, 0x00, 0x00)
-#define coral put_rgb(0x00,0xff,0xa2)
-#define naranja put_rgb(0xfa,0xad,0x08)
-#define azulito put_rgb(0x03,0xe8,0xfa)
-#define amarillo put_rgb(0xf6,0xfa,0x03)
+#include "neopixel.c"
 
-
-#include "hardware/pio.h"
-#include "hardware/clocks.h"
-#include "ws2812.pio.h"
-int sm;
-PIO pio;
-#define neopixel 16
-void put_pixel(uint32_t pixel_grb)
-{
-    //pio_sm_put_blocking(pio0, sm, pixel_grb << 8u);
-    pio_sm_put_blocking(pio, sm, pixel_grb << 8u);
-}
-void put_rgb(uint8_t red, uint8_t green, uint8_t blue)
-{
-    uint32_t mask = (green << 16) | (red << 8) | (blue << 0);
-    put_pixel(mask);
-}
-//neopixel
 
 //
 #define joy1Up 2 
@@ -408,13 +380,9 @@ void main() {
   tusb_init();
   kb_init(KBOUT, KBIN);
   ms_init(MSOUT, MSIN);
-  
-//neopixel
-  pio = pio1;
-  int sm= pio_claim_unused_sm(pio, true); //proporciona una stateMachine libre
-  uint offset = pio_add_program(pio, &ws2812_program);
-  ws2812_program_init(pio, sm, offset, neopixel, 800000, true);
-//neopixel
+ 
+
+  neopixel_init(); //inicializamos neopixel
 
   //Joystick 1
   button_t *Joy1Up = create_button(joy1Up, onchange);

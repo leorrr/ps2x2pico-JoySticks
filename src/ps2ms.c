@@ -24,6 +24,17 @@
  *
  */
 
+//defimos unos cuantos colores
+#define rojo put_rgb(0xff, 0x00, 0x00)
+#define verde put_rgb(0xff, 0xff, 0x00)
+#define azul put_rgb(0x00, 0x00, 0xff)
+#define violeta put_rgb(0xda, 0x05, 0xf8)
+#define negro put_rgb(0x00, 0x00, 0x00)
+#define coral put_rgb(0x00,0xff,0xa2)
+#define naranja put_rgb(0xfa,0xad,0x08)
+#define azulito put_rgb(0x03,0xe8,0xfa)
+#define amarillo put_rgb(0xf6,0xfa,0x03)
+ //
 #include "tusb.h"
 #include "ps2out.h"
 #include "ps2in.h"
@@ -135,6 +146,7 @@ void ms_send_movement(u8 buttons, s8 x, s8 y, s8 z) {
 }
 
 void ms_usb_receive(u8 const* report) {
+  coral;
   ms_db = report[0];
   ms_dx += (s8)report[1];
   ms_dy += (s8)report[2];

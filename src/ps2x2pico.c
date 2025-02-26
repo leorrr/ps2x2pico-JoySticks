@@ -35,6 +35,18 @@
 #include "button.h"
 
 //neopixel
+//defimos unos cuantos colores
+#define rojo put_rgb(0xff, 0x00, 0x00)
+#define verde put_rgb(0xff, 0xff, 0x00)
+#define azul put_rgb(0x00, 0x00, 0xff)
+#define violeta put_rgb(0xda, 0x05, 0xf8)
+#define negro put_rgb(0x00, 0x00, 0x00)
+#define coral put_rgb(0x00,0xff,0xa2)
+#define naranja put_rgb(0xfa,0xad,0x08)
+#define azulito put_rgb(0x03,0xe8,0xfa)
+#define amarillo put_rgb(0xf6,0xfa,0x03)
+
+
 #include "hardware/pio.h"
 #include "hardware/clocks.h"
 #include "ws2812.pio.h"
@@ -296,7 +308,8 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
           kb_inst = instance;
       }
       //board_led_write(1); //desabilitamos el led, porque la rp2040-zero, no tiene led y es tonteria
-       put_rgb(0x00, 0x00, 0xff);
+       //put_rgb(0x00, 0x00, 0xff);
+      azul;
     }
   }
 }
@@ -304,7 +317,8 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
 void tuh_hid_umount_cb(u8 dev_addr, u8 instance) {
   printf("HID(%d,%d) unmounted\n", dev_addr, instance);
   //board_led_write(0); //desabilitamos el led, porque la rp2040-zero, no tiene led y es tonteria
-   put_rgb(0x00, 0x00, 0x00);
+  //put_rgb(0x00, 0x00, 0x00);
+  negro;
   if(dev_addr == kb_addr && instance == kb_inst) {
     kb_addr = 0;
     kb_inst = 0;

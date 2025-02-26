@@ -24,6 +24,18 @@
  *
  */
 
+//defimos unos cuantos colores
+#define rojo put_rgb(0xff, 0x00, 0x00)
+#define verde put_rgb(0xff, 0xff, 0x00)
+#define azul put_rgb(0x00, 0x00, 0xff)
+#define violeta put_rgb(0xda, 0x05, 0xf8)
+#define negro put_rgb(0x00, 0x00, 0x00)
+#define coral put_rgb(0x00,0xff,0xa2)
+#define naranja put_rgb(0xfa,0xad,0x08)
+#define azulito put_rgb(0x03,0xe8,0xfa)
+#define amarillo put_rgb(0xf6,0xfa,0x03)
+//
+
 #include "tusb.h"
 #include "ps2out.h"
 #include "ps2in.h"
@@ -349,6 +361,7 @@ void kb_send_key(u8 key, bool is_key_pressed, u8 modifiers) {
 void kb_usb_receive(u8 const* report, u16 len) {
   //printf("report: %d, len %d\n",report[0],len);
   // go over modifier keys which are in report[0]
+  violeta;
   if(report[0] != prev_rpt[0]) {
     // modifiers have changed
     u8 rbits = report[0];

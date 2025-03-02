@@ -32,12 +32,12 @@
 #include "bsp/board_api.h"
 #include "tusb.h"
 #include "ps2x2pico.h"
-#include "button.h"
-
+//#include "button.h"
+#include "DB9.c"
 #include "neopixel.c"
 
 
-//
+/*
 #define joy1Up 2 
 #define joy1Down 3
 #define joy1Left 4 
@@ -55,18 +55,21 @@
 #define joy2Select 9  // Para joyStick SEGA
 #define joy2Start 1  // Para joyStick SEGA
 
+*/
 
 
 
 
-
-// #define myMillis to_ms_since_boot(get_absolute_time()) //leo esto tampoco se usa para nada
+#define myMillis to_ms_since_boot(get_absolute_time()) //nos da el tiempo en milisegundo desde que hemos arracado
+#define db9_periodo 100 //100 ms serian 10 veces por segundo
+#define gamePad_periodo 100
 static void print_utf16(uint16_t *temp_buf, size_t buf_len);
 void print_device_descriptor(tuh_xfer_t* xfer);
 
 
-unsigned long tiempo1 = 0;
-unsigned long tiempo2 = 0; //leo
+//unsigned long currentMillis; //almacena el tiempo actual
+unsigned long last_millisDB9=0; // almacena el ultimo tiempo leido para db9
+unsigned long last_millisGamePad=0; // almacena el ultimo tiempo leido para gamepad
 
 u8 kb_addr = 0;
 u8 kb_inst = 0;
@@ -79,6 +82,7 @@ char manufacturer_str[50];
 0x52 (cursor arriba), 0x51 (cursor abajo), 0x50 (cursor izquierda), 0x4f (cursor derecha), 0x2b (TAB)
 
 */
+/*
 // Rutina control jopystick's
 void onchange(button_t *button_p) {
   button_t *button = (button_t*)button_p;
@@ -192,6 +196,7 @@ void onchange(button_t *button_p) {
    
    //kb_send_key(0x52, 1, 0);
    return; }
+   */
 /*
   switch(button->pin){
     case joy1Up:
@@ -200,10 +205,10 @@ void onchange(button_t *button_p) {
     case joy2Up:
         printf("Joy2Up\n");
     break;
-  }*/
+  }
 }
 //
-
+*/
 
 void tuh_kb_set_leds(u8 leds) {
   if(kb_addr) {
@@ -355,8 +360,10 @@ void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 
        //u8 report2[]={0,0,0x2b,0,0,0,0};
        //u8 report3[]={0,0,0,0,0,0,0,0};
        //uint32_t tiempo1=myMillis;
-
-    gamePad_usb_receive(report); 
+       unsigned long currentMillisGMPD=myMillis;
+       if (currentMillisGMPD-last_millisGamePad>gamePad_periodo){last_millisGamePad=myMillis;gamePad_usb_receive(report);}
+       
+    //gamePad_usb_receive(report); 
     tuh_hid_receive_report(dev_addr, instance);
     
     break;
@@ -380,10 +387,10 @@ void main() {
   tusb_init();
   kb_init(KBOUT, KBIN);
   ms_init(MSOUT, MSIN);
- 
+  db9Init();
 
   neopixel_init(); //inicializamos neopixel
-
+/*
   //Joystick 1
   button_t *Joy1Up = create_button(joy1Up, onchange);
   button_t *Joy1Down = create_button(joy1Down, onchange);
@@ -409,8 +416,12 @@ void main() {
   //button_t *Joy2Select = create_button(joy2Select, onchange); 
   
   button_t *Joy2Start = create_button(joy2Start, onchange); // o tambien conocido como fire2
+*/
 
   while(1) {
+    unsigned long currentMillisDB9=myMillis;
+    if (currentMillisDB9-last_millisDB9>db9_periodo){last_millisDB9=myMillis;db9Report();}
+    
     tuh_task();
     kb_task();
     ms_task();

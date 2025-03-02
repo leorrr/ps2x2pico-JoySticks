@@ -104,7 +104,7 @@ void gamePad_usb_receive(u8 const* report) {
        else if (report[6]==0 && joy1Rtrigger_state==1){/*kb_send_key(0x3E, 0, 0);*/Esp_code_send(ESP_JOY1Z,0);joy1Rtrigger_state=0;}
        if (report[6]==2 && joy1Rtrigger_state==0){/*kb_send_key(0x3E, 1, 0);*/Esp_code_send(ESP_JOY1Z,1);joy1Rtrigger_state=1;}       
 
-     sleep_ms(80);  
+     //sleep_ms(80);  
 
 }
 

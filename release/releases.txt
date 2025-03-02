@@ -62,3 +62,13 @@ Definitivamente hay que reprogramar el soporte para joystick desde cero, es inus
 Problemas conocidos:
  - si se arranca con el joystick enchufado no funciona la placa se queda en modo reset continuo
  - para poder usar el mouse, no puede haber un GAMEPAD conectado al hub, solo el teclado y el mouse, y aconsejable reiniciar si no lo detecta)
+
+20250302ps2x2picoESPectrumKeyCode: Nueva rutina para procesamiento de joystick DB9, norma atari, de momento solo puerto 1,  ya no se utilizo la libreria Librerias usadas: https://github.com/TuriSc/RP2040-Button.
+	Testeado:
+
+		- Teclado: ok
+		- Gamepad USB: ok
+		- Ratón: ok
+		- Joystick: ok
+
+Solucionados los problemas con el raton y el joysctick ahora parece que todo funciona bien.

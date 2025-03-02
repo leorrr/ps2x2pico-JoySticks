@@ -73,7 +73,7 @@ Problemas conocidos:
 
 Solucionados los problemas con el raton y el joystick ahora parece que todo funciona bien.
 
-20250219_1645ps2x2picoESPectrumKeyCode.uf2: Añadido soporte par el segundo puerto DB9, ahora queda:
+20250302_1645ps2x2picoESPectrumKeyCode.uf2: Añadido soporte par el segundo puerto DB9, ahora queda:
 	- Puerto DB9 1 como joystick 1 en emulador ESPectrum
 	- Puerto DB9 2 como joystick 2 en emulador ESPectrum
 	- Gamepad USB  como joystick 1 en emulador ESPectrum

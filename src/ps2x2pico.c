@@ -32,35 +32,12 @@
 #include "bsp/board_api.h"
 #include "tusb.h"
 #include "ps2x2pico.h"
-//#include "button.h"
+
 #include "DB9.c"
 #include "neopixel.c"
 
 
-/*
-#define joy1Up 2 
-#define joy1Down 3
-#define joy1Left 4 
-#define joy1Right 5 
-#define joy1Fire 6 
-#define joy1Select 7 // Para joyStick SEGA
-#define joy1Start 8 // Para joyStick SEGA
-
-//
-#define joy2Up 29 
-#define joy2Down 28
-#define joy2Left 27
-#define joy2Right 26 
-#define joy2Fire 10  
-#define joy2Select 9  // Para joyStick SEGA
-#define joy2Start 1  // Para joyStick SEGA
-
-*/
-
-
-
-
-#define myMillis to_ms_since_boot(get_absolute_time()) //nos da el tiempo en milisegundo desde que hemos arracado
+#define myMillis to_ms_since_boot(get_absolute_time()) //nos da el tiempo en milisegundo desde que hemos arrancado la placa
 #define db9_periodo 100 //100 ms serian 10 veces por segundo
 #define gamePad_periodo 100
 static void print_utf16(uint16_t *temp_buf, size_t buf_len);
@@ -76,139 +53,7 @@ u8 kb_inst = 0;
 u8 kb_leds = 0;
 char device_str[50];
 char manufacturer_str[50];
-/*Codigos teclas mas comunes, u8 keycode - from "tinyusb/src/class/hid/hid.h"  HID_KEY_ definition   
-0x1e (1),0x1f (2),0x20 (3), 0x21 (4), 0x22 (5), 0x23 (6), 0x24 (7), 0x25 (8), 0x26 (9), 0x27 (0)
-0x14 (q), 0x04 (a), 0x12 (o), 0x13 (p), 0x28 (Enter), 0x29 (ESC), 0x2c (SPACE)
-0x52 (cursor arriba), 0x51 (cursor abajo), 0x50 (cursor izquierda), 0x4f (cursor derecha), 0x2b (TAB)
 
-*/
-/*
-// Rutina control jopystick's
-void onchange(button_t *button_p) {
-  button_t *button = (button_t*)button_p;
-  //printf("Button on pin %d changed its state to %d\n", button->pin, button->state);
-
-//de momento los 2 puertos de joystcik actuan igual, queda pendiente reasignar las teclas correspondientes a cada uno
-
-//Cuando soltamos un boton
-  if(button->state) {printf ("el state del pin %d es %d ¿Hemos SOLTADO el boton?\n",button->pin,button->state);
-  switch(button->pin){
-
-  //Comprobamos el joy1 si hemos soltado un boton 
-    case joy1Up:
-        kb_send_key(0x52, 0, 0); // 0x52 cursor arriba
-        printf("Joy1Up release\n");
-    break;
-    case joy1Down:
-        kb_send_key(0x51, 0, 0); // 0x51 cursor abajo
-        printf("Joy1Down release\n");
-    break;
-    case joy1Left:
-        kb_send_key(0x50, 0, 0); //0x50 cursor izquierda
-        printf("Joy1Left release\n");
-    break;
-    case joy1Right:
-        kb_send_key(0x4f, 0, 0); //0x4f cursor derecha
-        printf("Joy1Right release\n");
-    break;
-    case joy1Fire: 
-        kb_send_key(0x2b, 0, 0); // tabulador
-        printf("Joy1Fire release \n");
-    break;
-//comprobamos el joy2 si hemos soltado un boton
-// Mapeamos la norma sinclaer para el joystick 1 que corresponden 
-// a las teclas 6,7,8,9,0
-   case joy2Up:
-        kb_send_key(0x26, 0, 0); //0x26 tecla 9
-        printf("Joy2Up release\n");
-    break;
-    case joy2Down:
-        kb_send_key(0x25, 0, 0); //0x25 tecla 8
-        printf("Joy2Down release\n");
-    break;
-    case joy2Left:
-        kb_send_key(0x23, 0, 0); // 0x23 tecla 6
-        printf("Joy2Left release\n");
-    break;
-    case joy2Right:
-        kb_send_key(0x24, 0, 0); // 0x24 tecla 7
-        printf("Joy2Right release\n");
-    break;
-    case joy2Fire:
-        kb_send_key(0x27, 0, 0); //0x27 tecla 0
-        printf("Joy2Fire release \n");
-    break; 
-  }
-  
-  //kb_send_key(0x52, 0, 0);
-   return;}
-   
-   //cuando pulsamos un boton
-   if(!button->state) {printf ("el state del pin %d es %d ¿Hemos pulsado el boton?\n",button->pin,button->state);
-   switch(button->pin){
-
-   //comprobamos el joy1 si hemos pulsado un boton 
-    case joy1Up:
-        kb_send_key(0x52, 1, 0); // 0x52 cursor arriba 
-        printf("Joy1Up \n");
-    break;
-    case joy1Down:
-        kb_send_key(0x51, 1, 0); // 0x51 cursor abajo 
-        printf("Joy1Down\n");
-    break;
-    case joy1Left:
-        kb_send_key(0x50, 1, 0); // 0x50 cursor izquierda
-        printf("Joy1Left\n");
-    break;
-    case joy1Right:
-        kb_send_key(0x4f, 1, 0);// 0x4f cursor derecha
-        printf("Joy1Right\n");
-    break;
-    case joy1Fire:
-        kb_send_key(0x2b, 1, 0);// 0x2b tabulador
-        printf("Joy1Fire\n");
-    break;
-//comprobamos el joy2 si hemos pulsado un boton 
-// Mapeamos la norma sinclaer para el joystick 1 que corresponden 
-// a las teclas 6,7,8,9,0
-  case joy2Up:
-        kb_send_key(0x26, 1, 0); // //0x26 tecla 9
-        printf("Joy2Up \n");
-    break;
-    case joy2Down:
-        kb_send_key(0x25, 1, 0); //0x25 tecla 8
-        printf("Joy2Down\n");
-    break;
-    case joy2Left:
-        kb_send_key(0x23, 1, 0);// 0x23 tecla 6
-        printf("Joy2Left\n");
-    break;
-    case joy2Right:
-        kb_send_key(0x24, 1, 0);// 0x24 tecla 7
-        printf("Joy2Right\n");
-    break;
-    case joy2Fire:
-        kb_send_key(0x27, 1, 0);//0x27 tecla 0
-        printf("Joy2Fire\n");
-    break;
-  }
-   
-   
-   //kb_send_key(0x52, 1, 0);
-   return; }
-   */
-/*
-  switch(button->pin){
-    case joy1Up:
-        printf("Joy1Up\n");
-    break;
-    case joy2Up:
-        printf("Joy2Up\n");
-    break;
-  }
-}
-//
-*/
 
 void tuh_kb_set_leds(u8 leds) {
   if(kb_addr) {
@@ -284,18 +129,14 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
           kb_addr = dev_addr;
           kb_inst = instance;
       }
-      //board_led_write(1); //desabilitamos el led, porque la rp2040-zero, no tiene led y es tonteria
-       //put_rgb(0x00, 0x00, 0xff);
-      azul;
+      azul; //encendemos el led cuando conectamos un dispositivo usb
     }
   }
 }
 
 void tuh_hid_umount_cb(u8 dev_addr, u8 instance) {
   printf("HID(%d,%d) unmounted\n", dev_addr, instance);
-  //board_led_write(0); //desabilitamos el led, porque la rp2040-zero, no tiene led y es tonteria
-  //put_rgb(0x00, 0x00, 0x00);
-  negro;
+  negro;//apagamos  el led cuando desconectamos un dispositivo usb
   if(dev_addr == kb_addr && instance == kb_inst) {
     kb_addr = 0;
     kb_inst = 0;
@@ -356,14 +197,11 @@ void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 
       #endif
       #endif
 
-      
-       //u8 report2[]={0,0,0x2b,0,0,0,0};
-       //u8 report3[]={0,0,0,0,0,0,0,0};
-       //uint32_t tiempo1=myMillis;
+  // procesamos el report cada 100ms, unas 10 veces por segundo, para no sobrecargar el sistema
+  //porque los reports del gamepad aunque no este pulsado ningun boton siempre se envian
        unsigned long currentMillisGMPD=myMillis;
        if (currentMillisGMPD-last_millisGamePad>gamePad_periodo){last_millisGamePad=myMillis;gamePad_usb_receive(report);}
        
-    //gamePad_usb_receive(report); 
     tuh_hid_receive_report(dev_addr, instance);
     
     break;
@@ -387,38 +225,14 @@ void main() {
   tusb_init();
   kb_init(KBOUT, KBIN);
   ms_init(MSOUT, MSIN);
-  db9Init();
+  db9Init(); // inicializamos los joysticks db9, norma atari
 
   neopixel_init(); //inicializamos neopixel
-/*
-  //Joystick 1
-  button_t *Joy1Up = create_button(joy1Up, onchange);
-  button_t *Joy1Down = create_button(joy1Down, onchange);
-  button_t *Joy1Left = create_button(joy1Left, onchange);
-  button_t *Joy1Right = create_button(joy1Right, onchange);
-  button_t *Joy1Fire = create_button(joy1Fire, onchange);
-
-  //Se usa en el mando sega para comprobrar botones extra, hay que ponerla a 0 o 1 de modo manual y hacer a continuacion la lectura
-  //de momento la desactivamos
-  //button_t *Joy1Select = create_button(joy1Select, onchange); 
-
-  button_t *Joy1Start = create_button(joy1Start, onchange); // o tambien conocido como fire2
-
-// Joystick 2
-  button_t *Joy2Up = create_button(joy2Up, onchange);
-  button_t *Joy2Down = create_button(joy2Down, onchange);
-  button_t *Joy2Left = create_button(joy2Left, onchange);
-  button_t *Joy2Right = create_button(joy2Right, onchange);
-  button_t *Joy2Fire = create_button(joy2Fire, onchange);
-
-  //Se usa en el mando sega para comprobrar botones extra, hay que ponerla a 0 o 1 de modo manual y hacer a continuacion la lectura
-  //de momento la desactivamos
-  //button_t *Joy2Select = create_button(joy2Select, onchange); 
-  
-  button_t *Joy2Start = create_button(joy2Start, onchange); // o tambien conocido como fire2
-*/
 
   while(1) {
+
+    // procesamos el report de los db9 cada 100ms, que serian unas 10 veces por segungo
+    // para no sobrecargar el sistema
     unsigned long currentMillisDB9=myMillis;
     if (currentMillisDB9-last_millisDB9>db9_periodo){last_millisDB9=myMillis;db9Report();}
     

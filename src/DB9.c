@@ -1,5 +1,5 @@
-//Este codigo inilicializa el joystick db 9 y ejecuta la ruitna de lectura de Joystick y mapea su correspondiente codigo
-//generado por chatgpt
+//Este codigo inicializa el joystick db 9 y ejecuta la ruitna de lectura de Joystick y mapea su correspondiente codigo
+//Codigo inspirado por  por chatgpt
 // Joy1
 #define joy1Up 2 
 #define joy1Down 3
@@ -25,13 +25,7 @@
 #include "scancodesets.h"
 #include "espectrumCodeSet.h"
 #include "neopixel.h"
-//#include "espec_to_ps2.c"
-/*
-#define JOYSTICK_UP_PIN 2
-#define JOYSTICK_DOWN_PIN 3
-#define JOYSTICK_LEFT_PIN 4
-#define JOYSTICK_RIGHT_PIN 5
-#define JOYSTICK_FIRE_PIN 6 */
+
 
 #define DEBOUNCE_DELAY_MS 50  // Retardo para anti-rebote en milisegundos
 
@@ -50,7 +44,10 @@ typedef struct {
 } JoystickState;
 
 
-//JoystickState joystick_state = {1};
+//inicializa los valores por defecto de la estrucutura, como el pull up de los gpio estan activado
+//utilizamos logica inversa 1 desactivados , 0 para activados, para guardar el estado anterior
+// lo hacemos normal 0 para desactivado y 1 para activado
+
 JoystickState joy1={1,1,1,1,1,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto
 
 
@@ -64,17 +61,9 @@ void db9Init()
     setGpio(joy1Up);setGpio(joy1Down);setGpio(joy1Left);setGpio(joy1Right);setGpio(joy1Fire);
 }
 
-// Función para leer el estado del joystick con anti-rebote
+// Función para leer el estado del joystick 
 void read_joystick(JoystickState *state) {
-    /*static uint32_t last_read_time = 0;
-
-    // Verificar si ha pasado suficiente tiempo para el anti-rebote
-    if (absolute_time_diff_us(get_absolute_time(), last_read_time) < DEBOUNCE_DELAY_MS ) {
-        return;
-    }
-
-    last_read_time = get_absolute_time();*/
-
+   
     // Leer el estado de cada botón 1 si no esta pulsado 0 si lo pulsamos
     state->up = gpio_get(joy1Up);
     state->down = gpio_get(joy1Down);
@@ -117,46 +106,3 @@ if (joy1.down==0 && joy1.lastDown==0){/*kb_send_key(0x51, 1, 0);*/Esp_code_send(
 //sleep_ms(80);
 
 }
-
-/*
-int main() {
-    // Inicializar la comunicación serie
-    stdio_init_all();
-    gpioInit();
-    /*
-    // Inicializar los pines GPIO
-    gpio_init(JOYSTICK_UP_PIN);
-    gpio_set_dir(JOYSTICK_UP_PIN, GPIO_IN);
-    gpio_pull_up(JOYSTICK_UP_PIN);
-
-    gpio_init(JOYSTICK_DOWN_PIN);
-    gpio_set_dir(JOYSTICK_DOWN_PIN, GPIO_IN);
-    gpio_pull_up(JOYSTICK_DOWN_PIN);
-
-    gpio_init(JOYSTICK_LEFT_PIN);
-    gpio_set_dir(JOYSTICK_LEFT_PIN, GPIO_IN);
-    gpio_pull_up(JOYSTICK_LEFT_PIN);
-
-    gpio_init(JOYSTICK_RIGHT_PIN);
-    gpio_set_dir(JOYSTICK_RIGHT_PIN, GPIO_IN);
-    gpio_pull_up(JOYSTICK_RIGHT_PIN);
-
-    gpio_init(JOYSTICK_FIRE_PIN);
-    gpio_set_dir(JOYSTICK_FIRE_PIN, GPIO_IN);
-    gpio_pull_up(JOYSTICK_FIRE_PIN);
-*/
-   /*
-while (true) {
-        // Leer el estado del joystick
-        read_joystick(&joy1);
-
-        // Imprimir el estado por pantalla
-        printf("Joystick: UP=%d, DOWN=%d, LEFT=%d, RIGHT=%d, FIRE=%d\n",
-               joystick_state.up, joystick_state.down, joystick_state.left,
-               joystick_state.right, joystick_state.fire);
-
-        sleep_ms(100); // Pequeña pausa para evitar sobrecargar la salida serie
-    }
-
-    return 0;
-} */

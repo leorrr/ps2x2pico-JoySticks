@@ -45,7 +45,7 @@ add_compile_definitions(LVOUT=13) # Level shifter pull-up voltage
 add_compile_definitions(KBOUT=11) # Keyboard data pin, clock pin is 12
 add_compile_definitions(MSOUT=14) # Mouse data pin, clock pin is 15
 
-### PS/2 input
+### PS/2 input 
 add_compile_definitions(LVIN=5) # Level shifter pull-up voltage
 add_compile_definitions(KBIN=3) # Keyboard data pin, clock pin is 4
 add_compile_definitions(MSIN=6) # Mouse data pin, clock pin is 7
@@ -79,9 +79,8 @@ if (NOT TARGET button)
         pico_stdlib
     )
 endif()
-###/button
 
 target_include_directories(ps2x2pico PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src)
-target_link_libraries(ps2x2pico pico_stdlib hardware_pio tinyusb_host tinyusb_board button)
+target_link_libraries(ps2x2pico pico_stdlib hardware_pio tinyusb_host tinyusb_board)
 
 pico_add_extra_outputs(ps2x2pico)

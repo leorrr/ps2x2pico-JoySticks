@@ -107,22 +107,3 @@ void gamePad_usb_receive(u8 const* report) {
      //sleep_ms(80);  
 
 }
-
-
-
-
-
-
-
-/*bool gp_task() {
-  ps2out_task(&ms_out);
-  ps2in_task(&ms_in, &ms_out);
-  return ms_streaming && !ms_out.busy;
-}*/
-/*
-/*
-bool kb_task() {
-  ps2out_task(&kb_out);
-  ps2in_task(&kb_in, &kb_out);
-  return kb_enabled && !kb_out.busy;// TODO: return value can probably be void
-} */

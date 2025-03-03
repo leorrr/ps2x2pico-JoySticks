@@ -14,7 +14,7 @@ He diseñado una placa nueva inspirada en la placa con Rp2040 Zero de **Destroye
 Cuando la vi pense que lastima no aprovechar los pines que sobran.... y este es el resultado esta en fase beta, pero en principio es funcional,  el soporte para gamepad usb y los 2 puertos DB9 norma Atari es operativo mapaeado con los Ps2 Key ESpecial codes para usar con emulador ESPectrum, en resumen:
 
  - El gamepad USB se corresponde al joystick 1 en emulador ESPectrum.
- - El DB9 1 al joystick1 en emulador ESPectrum.
+ - El DB9 1 al joystick 1 en emulador ESPectrum.
  - El DB92 al joystick 2 en emulador ESPectrum.
 
 Pendiente dar soporte para gamepad de sega de tres y seis botones al igual que el proyecto de  **David Carrion** (  **https://github.com/dacarsoft/DB9_2_Keyboard** ) o el fork del mismo de **Antonio Taimaron**, PowaJoy ( **https://github.com/hash6iron/PowaJoy**),

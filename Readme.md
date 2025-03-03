@@ -1,5 +1,6 @@
+# Atención la rama **master** ha quedado obsoleta y no se actualizara mas, para ver ver las ultimas actualizaciones por favor visitar la rama "ESPectrumSpecialKeyCodes" en el siguiente enlace **https://github.com/leorrr/ps2x2pico-JoySticks/tree/ESPectrumSpecialKeyCodes**
 
-# PS2x2Pico&Joystick's
+## PS2x2Pico&Joystick's
 
 **forked from  https://github.com/No0ne/ps2x2pico, https://github.com/destroyer-dcf/usb2ps2**
 

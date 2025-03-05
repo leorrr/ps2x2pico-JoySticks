@@ -32,7 +32,7 @@
 #include "bsp/board_api.h"
 #include "tusb.h"
 #include "ps2x2pico.h"
-
+#include "ps2gamepad.c"
 #include "DB9.c"
 #include "neopixel.c"
 
@@ -51,6 +51,14 @@ unsigned long last_millisGamePad=0; // almacena el ultimo tiempo leido para game
 u8 kb_addr = 0;
 u8 kb_inst = 0;
 u8 kb_leds = 0;
+//Leo
+u8 gamepadADDR1= 0;
+u8 gamepadINST1=0;
+u8 gamepadADDR2= 0;
+u8 gamepadINST2=0;
+int reportSum=269;
+//leo
+
 char device_str[50];
 char manufacturer_str[50];
 
@@ -129,6 +137,14 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
           kb_addr = dev_addr;
           kb_inst = instance;
       }
+      //leo
+      if (hid_if_proto == HID_ITF_PROTOCOL_NONE) {
+        // Guardamos la direcciones de los gamepad a medida que los conectamos
+        // solo se guardan 2 gamepads el resto los ignoramos el spectrum solo tenioa 2 joysticks
+        if (gamepadADDR1==0 && gamepadINST1==0){gamepadADDR1 = dev_addr; gamepadINST1= instance;}
+        else if (gamepadADDR2==0 && gamepadINST2==0){gamepadADDR2= dev_addr; gamepadINST2= instance;}
+    }
+    //leo
       azul; //encendemos el led cuando conectamos un dispositivo usb
     }
   }
@@ -196,12 +212,32 @@ void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 
       printf("HID_MS(%d,%d)\n", dev_addr, instance);
       #endif
       #endif
-
+//leo
+/*
+    if(dev_addr==gamepadADDR1 && instance==gamepadINST1) {gamePad1_usb_receive(report);}
+    if(dev_addr==gamepadADDR2 && instance==gamepadINST2) {gamePad2_usb_receive(report);}*/
+    
+/*
+//int reportSum = report[3]+report[4]+ report[5]+ report[6];
+//printf ("reportSum= %d",reportSum);
+if(dev_addr==gamepadADDR1 && instance==gamepadINST1 ) {gamePad1_usb_receive(report);}//reportSum=269;}
+//if(dev_addr==gamepadADDR1 && instance==gamepadINST1 && (report[3]!=127 && report[4]!=127 && report[5]!=15 && report[6]!=0)) {printf("report3: %d, report4; %d,report5: %d,report6:%d",report[3],report[4],report[5], report[6]);gamePad1_usb_receive(report);}
+if(dev_addr==gamepadADDR2 && instance==gamepadINST2 ) {gamePad2_usb_receive(report);}//reportSum=269;}
+*/
+//leo
+unsigned long currentMillisGMPD=myMillis;
+if (currentMillisGMPD-last_millisGamePad>gamePad_periodo)
+{
+last_millisGamePad=myMillis;
+if(dev_addr==gamepadADDR1 && instance==gamepadINST1 ) {Gamepad1Process(report);tuh_hid_receive_report(dev_addr, instance);break;}
+if(dev_addr==gamepadADDR2 && instance==gamepadINST2 ) {Gamepad2Process(report);tuh_hid_receive_report(dev_addr, instance);break;}
+}
+/*
   // procesamos el report cada 100ms, unas 10 veces por segundo, para no sobrecargar el sistema
   //porque los reports del gamepad aunque no este pulsado ningun boton siempre se envian
        unsigned long currentMillisGMPD=myMillis;
        if (currentMillisGMPD-last_millisGamePad>gamePad_periodo){last_millisGamePad=myMillis;gamePad_usb_receive(report);}
-       
+ */      
     tuh_hid_receive_report(dev_addr, instance);
     
     break;
@@ -235,7 +271,7 @@ void main() {
     // para no sobrecargar el sistema
     unsigned long currentMillisDB9=myMillis;
     if (currentMillisDB9-last_millisDB9>db9_periodo){last_millisDB9=myMillis;db9Report();}
-    
+   
     tuh_task();
     kb_task();
     ms_task();

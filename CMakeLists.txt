@@ -57,28 +57,11 @@ if (MS_RATE_HOST_CONTROL)
     add_compile_definitions(MS_RATE_HOST_CONTROL)
 endif()
 
-pico_set_program_name(ps2x2pico "ps2x2pico")
-pico_set_program_version(ps2x2pico "1.3")
+pico_set_program_name(ps2x2pico "ps2x2pico-joystick")
+pico_set_program_version(ps2x2pico "Version-20250309")
 
 pico_enable_stdio_uart(ps2x2pico 1)
 pico_enable_stdio_usb(ps2x2pico 0)
-
-###Button
-if (NOT TARGET button)
-    add_library(button INTERFACE)
-
-    target_sources(button INTERFACE
-            ${CMAKE_CURRENT_LIST_DIR}/src/button.c
-    )
-
-    target_include_directories(button INTERFACE
-            ${CMAKE_CURRENT_LIST_DIR}
-    )
-
-    target_link_libraries(button INTERFACE
-        pico_stdlib
-    )
-endif()
 
 target_include_directories(ps2x2pico PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src)
 target_link_libraries(ps2x2pico pico_stdlib hardware_pio tinyusb_host tinyusb_board)

@@ -85,3 +85,13 @@ Solucionados los problemas con el raton y el joystick ahora parece que todo func
 		- Ratón: ok
 		- Joystick1: ok
 		- Joystick2: ok
+
+20250309ps2x2picoESPectrumKeyCode Añadido soporte para segundo GAmepad Usb como joystick2 en emulador ESPectrum
+
+	Testedo:
+		- Teclado: ok
+		- Gamepad1 USB: ok (joystick 1 en emulador ESPectrum)
+		- Gamepad2 USB: ok (joystick 2 en emulador ESPectrum)
+		- Ratón: ok
+		- Joystick1: ok (joystick 1 en emulador ESPectrum)
+		- Joystick2: ok	(joystick 1 en emulador ESPectrum)

@@ -94,4 +94,4 @@ Solucionados los problemas con el raton y el joystick ahora parece que todo func
 		- Gamepad2 USB: ok (joystick 2 en emulador ESPectrum)
 		- Ratón: ok
 		- Joystick1: ok (joystick 1 en emulador ESPectrum)
-		- Joystick2: ok	(joystick 1 en emulador ESPectrum)
+		- Joystick2: ok	(joystick 2 en emulador ESPectrum)

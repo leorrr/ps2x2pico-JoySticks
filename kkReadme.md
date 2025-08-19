@@ -15,7 +15,6 @@ Cuando la vi pense que lastima no aprovechar los pines que sobran.... y este es 
 
  - Gamepad1 USB se corresponde al joystick 1 en emulador ESPectrum.
  - Gamepad2 USB se corresponde al joystick 2 en emulador ESPectrum.
- - Gamepad1 xBox se corresponde al joystick 1 en emulador ESPectrum.
  - El DB9 1 al joystick 1 en emulador ESPectrum.
  - El DB92 al joystick 2 en emulador ESPectrum.
 
@@ -23,11 +22,6 @@ Pendiente dar soporte para gamepad de sega de tres y seis botones al igual que e
 
 Añadido soporte para GamePad USB imitacion  Nintendo Snes
 ![GamePad](./images/SnesUsbControler.jpg)
-
-Añadido soporte para GamePad USB con cable compatible Xbox, solo cruceta y botones
-![x360](./images/mandoXbox360.jpg)
-
-Pendiente dar soporte a sticks analogicos en mando Xbox, y soporte a segundo mando, para juegos de 2 jugadores
 
 ### **Mapeando los botones con los especial ps2 Keycodes para su uso en emulador ESPectrum**
 

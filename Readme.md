@@ -1,7 +1,7 @@
 
 # PS2x2Pico&Joystick's
 
-**forked from  https://github.com/No0ne/ps2x2pico, https://github.com/destroyer-dcf/usb2ps2**
+**forked from  https://github.com/No0ne/ps2x2pico, https://github.com/destroyer-dcf/usb2ps2, https://github.com/Ryzee119/tusb_xinput**
 
 
 

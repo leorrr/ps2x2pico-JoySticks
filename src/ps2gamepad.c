@@ -1,13 +1,16 @@
-#include "tusb.h"
+//#include "tusb.h" 20250608 Si falla descomentarlo
 #include "ps2out.h"
 #include "ps2in.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "scancodesets.h"
-#include "espec_to_ps2.c"
-#include "ps2x2pico.h"
+//#include "espec_to_ps2.c"
+#include "espectrumCodeSet.h"
+#include "ps2gamepad.h"
+//#include "ps2x2pico.h"
 //leo
 // Estructura para manejar el estado del gamepad
+/*
 typedef struct {
        bool up;
        bool down;
@@ -35,10 +38,10 @@ typedef struct {
        bool lastRtrigger;
    } gamepadState;
 //leo   
-
-//inicializa los valores por defecto de la estructura, como el pull up de los gpio estan activado
+*/
+//inicializa los valores por defecto de la estructura, En DB9 como el pull up de los gpio estan activado
 //utilizamos logica inversa 1 desactivados , 0 para activados, para guardar el estado anterior
-// lo hacemos normal 0 para desactivado y 1 para activado
+// En el gamepad lo hacemos normal 0 para desactivado y 1 para activado
 
 
 gamepadState gamePad1={0,0,0,0,0,0,0,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto

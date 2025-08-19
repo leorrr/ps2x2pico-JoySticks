@@ -1,4 +1,5 @@
-//Este codigo inicializa el joystick db 9 y ejecuta la ruitna de lectura de Joystick y mapea su correspondiente codigo
+/*
+//Este codigo inicializa el joystick db 9 y ejecuta la rutina de lectura de Joystick y mapea su correspondiente codigo
 //Codigo inspirado por  por chatgpt
 // Joy1
 #define joy1Up 2 
@@ -16,7 +17,9 @@
 #define joy2Right 26 
 #define joy2Fire 10  
 #define joy2Select 9  // Para joyStick SEGA
-#define joy2Start 1  // Para joyStick SEGA
+#define joy2Start 13  // Para joyStick SEGA
+
+*/
 
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
@@ -25,10 +28,10 @@
 #include "scancodesets.h"
 #include "espectrumCodeSet.h"
 #include "neopixel.h"
+#include "DB9.h"
 
-
-#define DEBOUNCE_DELAY_MS 50  // Retardo para anti-rebote en milisegundos
-
+// #define DEBOUNCE_DELAY_MS 50  // Retardo para anti-rebote en milisegundos
+/*
 // Estructura para manejar el estado del joystick
 typedef struct {
     bool up;
@@ -42,11 +45,11 @@ typedef struct {
     bool lastRight;
     bool lastFire;
 } JoystickState;
+*/
 
-
-//inicializa los valores por defecto de la estructura, como el pull up de los gpio estan activado
+//inicializa los valores por defecto de la estructura, En DB9 como el pull up de los gpio estan activado
 //utilizamos logica inversa 1 desactivados , 0 para activados, para guardar el estado anterior
-// lo hacemos normal 0 para desactivado y 1 para activado
+// en el gamepad lo hacemos normal 0 para desactivado y 1 para activado
 
 
 JoystickState joy1={1,1,1,1,1,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto
@@ -84,7 +87,10 @@ void read_joystick2(JoystickState *state) {
     state->right = gpio_get(joy2Right);
     state->fire = gpio_get(joy2Fire);
 }
-void db9Report()
+
+//Esta funcion actualizada el estado de los joysticks db9 , almacena los resultados en la estructura y a continuacion
+//los proceso para enviar los codigos correspondientes a la placa ESP32
+void db9Process()
 {
     read_joystick1(&joy1);
     //printf("Joystick1: UP=%d, DOWN=%d, LEFT=%d, RIGHT=%d, FIRE=%d\n",  joy1.up, joy1.down, joy1.left,joy1.right, joy1.fire);}

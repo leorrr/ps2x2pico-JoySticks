@@ -32,14 +32,18 @@
 #include "bsp/board_api.h"
 #include "tusb.h"
 #include "ps2x2pico.h"
-#include "ps2gamepad.c"
-#include "DB9.c"
-#include "neopixel.c"
+#include "ps2gamepad.h"
 
+#include "DB9.h"
+#include "neopixel.h"
+#include "xinput_host.h"
+#include "ps2x360.h"
 
 #define myMillis to_ms_since_boot(get_absolute_time()) //nos da el tiempo en milisegundo desde que hemos arrancado la placa
-#define db9_periodo 100 //100 ms serian 10 veces por segundo
-#define gamePad_periodo 100
+#define db9_periodo 50 //100 ms serian 10 veces por segundo
+#define gamePad_periodo 50
+#define xinput_Periodo 50
+
 static void print_utf16(uint16_t *temp_buf, size_t buf_len);
 void print_device_descriptor(tuh_xfer_t* xfer);
 
@@ -47,6 +51,7 @@ void print_device_descriptor(tuh_xfer_t* xfer);
 //unsigned long currentMillis; //almacena el tiempo actual
 unsigned long last_millisDB9=0; // almacena el ultimo tiempo leido para db9
 unsigned long last_millisGamePad=0; // almacena el ultimo tiempo leido para gamepad
+unsigned long last_millisXinput=0; // almacena el ultimo tiempo leido para xinput mando 360
 
 u8 kb_addr = 0;
 u8 kb_inst = 0;
@@ -58,6 +63,149 @@ u8 gamepadADDR2= 0;
 u8 gamepadINST2=0;
 int reportSum=269;
 //leo
+//#define DEADZONE 8000
+int16_t gamepad_report[7] = {0};
+//xinput_host____________________________________
+
+//Since https://github.com/hathach/tinyusb/pull/2222, we can add in custom vendor drivers easily
+usbh_class_driver_t const* usbh_app_driver_get_cb(uint8_t* driver_count){
+    *driver_count = 1;
+    return &usbh_xinput_driver;
+}
+
+void tuh_xinput_report_received_cb(uint8_t dev_addr, uint8_t instance, xinputh_interface_t const* xid_itf, uint16_t len)
+{
+    const xinput_gamepad_t *p = &xid_itf->pad;
+    //uint32_t report360[]={p->wButtons,p->bLeftTrigger,p->bRightTrigger,p->sThumbLX,p->sThumbLY,p->sThumbRX,p->sThumbRY};
+
+    const char* type_str;
+unsigned long currentMillisXinput=myMillis;
+
+if (currentMillisXinput-last_millisXinput>xinput_Periodo)
+{
+
+last_millisXinput=myMillis;
+   if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS)
+
+   
+    {
+      
+        switch (xid_itf->type)
+        {
+            case 1: type_str = "Xbox One";          break;
+            case 2: type_str = "Xbox 360 Wireless"; break;
+            case 3: type_str = "Xbox 360 Wired";    break;
+            case 4: type_str = "Xbox OG";           break;
+            default: type_str = "Unknown";
+        }
+
+        if (xid_itf->connected && xid_itf->new_pad_data)
+        {
+         // uint16_t my360report[]={p->wButtons,p->bLeftTrigger,p->bLeftTrigger ,p->sThumbLX,p->sThumbLY,p->sThumbRX,p->sThumbRY};
+          /*uint16_t myx360buttons=p->wButtons;
+          uint8_t myx360blt=p->bLeftTrigger;
+          uint8_t my360brt=p->bRightTrigger;
+          int16_t my360stlx=p->sThumbLX;
+          int16_t my360stly=p->sThumbLY;
+          int16_t my360strx=p->sThumbRX;
+          int16_t my360stry=p->sThumbRY;
+
+          int16_t mmy360report[]={myx360buttons,myx360blt,my360brt,my360stlx,my360stly,my360strx,my360stry}; */
+        /*uint16_t btn = p->wButtons;
+        uint8_t lt = p->bLeftTrigger;
+        uint8_t rt = p->bRightTrigger;
+        int16_t lx = p->sThumbLX;
+        int16_t ly = p->sThumbLY;
+        int16_t rx = p->sThumbRX;
+        int16_t ry = p->sThumbRY;*/
+
+        gamepad_report[0] = p->wButtons;
+        gamepad_report[1] = p->bLeftTrigger;
+        gamepad_report[2] = p->bRightTrigger;
+        gamepad_report[3] = p->sThumbLX;
+        gamepad_report[4] = p->sThumbLY;
+        gamepad_report[5] = p->sThumbRX;
+        gamepad_report[6] = p->sThumbRY;
+
+/*
+//x360Process1();
+// --- Stick izquierdo ---
+        if (gamepad_report[3] > DEADZONE)        printf("Stick Izq →\n");
+        else if (gamepad_report[3]< -DEADZONE)  printf("Stick Izq ←\n");
+
+        if (gamepad_report[4] > DEADZONE)        printf("Stick Izq ↑\n");
+        else if (gamepad_report[4] < -DEADZONE)  printf("Stick Izq ↓\n");
+
+        // --- Stick derecho ---
+        if (gamepad_report[5] > DEADZONE)        printf("Stick Der →\n");
+        else if (gamepad_report[5] < -DEADZONE)  printf("Stick Der ←\n");
+
+        if (gamepad_report[6] > DEADZONE)        printf("Stick Der ↑\n");
+        else if (gamepad_report[6] < -DEADZONE)  printf("Stick Der ↓\n");
+
+        // --- Gatillos ---
+        if (gamepad_report[1] > 10)              printf("Trigger Izq presionado (%d)\n", gamepad_report[1]);
+        if (gamepad_report[2] > 10)              printf("Trigger Der presionado (%d)\n", gamepad_report[2]);
+
+        uint16_t btn = (uint16_t)gamepad_report[0];
+        // --- Botones ---
+        if (btn & XINPUT_GAMEPAD_A)      printf("Botón A\n");
+        if (btn & XINPUT_GAMEPAD_B)      printf("Botón B\n");
+        if (btn & XINPUT_GAMEPAD_X)      printf("Botón X\n");
+        if (btn & XINPUT_GAMEPAD_Y)      printf("Botón Y\n");
+
+        if (btn & XINPUT_GAMEPAD_LEFT_SHOULDER)  printf("Botón LB\n");
+        if (btn & XINPUT_GAMEPAD_RIGHT_SHOULDER) printf("Botón RB\n");
+
+        if (btn & XINPUT_GAMEPAD_BACK)   printf("Botón Back\n");
+        if (btn & XINPUT_GAMEPAD_START)  printf("Botón Start\n");
+
+        if (btn & XINPUT_GAMEPAD_LEFT_THUMB)  printf("Stick Izq presionado\n");
+        if (btn & XINPUT_GAMEPAD_RIGHT_THUMB) printf("Stick Der presionado\n");
+
+        if (btn & XINPUT_GAMEPAD_DPAD_UP)    printf("DPad ↑\n");
+        if (btn & XINPUT_GAMEPAD_DPAD_DOWN)  printf("DPad ↓\n");
+        if (btn & XINPUT_GAMEPAD_DPAD_LEFT)  printf("DPad ←\n");
+        if (btn & XINPUT_GAMEPAD_DPAD_RIGHT) printf("DPad →\n");
+*/
+          //printf("%04x, ,%02x, %02x, %d, %0d, %d, %d", myx360buttons,myx360blt,my360brt,my360stlx,my360stly,my360strx,my360stry);
+         //printf("kkk: %04x",myx360buttons);
+
+         //printf("kkk: %04x",mmy360report[0]);
+         x360Process1(gamepad_report);
+
+        
+        }
+    }
+  }
+    tuh_xinput_receive_report(dev_addr, instance);
+}
+
+void tuh_xinput_mount_cb(uint8_t dev_addr, uint8_t instance, const xinputh_interface_t *xinput_itf)
+{
+    printf("XINPUT MOUNTED %02x %d\n", dev_addr, instance);
+    // If this is a Xbox 360 Wireless controller we need to wait for a connection packet
+    // on the in pipe before setting LEDs etc. So just start getting data until a controller is connected.
+    if (xinput_itf->type == XBOX360_WIRELESS && xinput_itf->connected == false)
+    {
+        tuh_xinput_receive_report(dev_addr, instance);
+        return;
+    }
+    tuh_xinput_set_led(dev_addr, instance, 0, true);
+    tuh_xinput_set_led(dev_addr, instance, 1, true);
+    tuh_xinput_set_rumble(dev_addr, instance, 0, 0, true);
+    tuh_xinput_receive_report(dev_addr, instance);
+}
+
+void tuh_xinput_umount_cb(uint8_t dev_addr, uint8_t instance)
+{
+    printf("XINPUT UNMOUNTED %02x %d\n", dev_addr, instance);
+}
+
+//ximput_host__________________________________________
+
+
+
 
 char device_str[50];
 char manufacturer_str[50];
@@ -74,6 +222,7 @@ void tuh_kb_set_leds(u8 leds) {
 #define LANGUAGE_ID 0x0409 // English
 
 void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_len) {
+  printf("decs_Report: %02x, len: %04x ",desc_report,desc_len);
   // This happens if report descriptor length > CFG_TUH_ENUMERATION_BUFSIZE.
   // Consider increasing #define CFG_TUH_ENUMERATION_BUFSIZE 256 in tusb_config.h
   if (desc_report == NULL && desc_len == 0) {
@@ -199,9 +348,6 @@ void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 
     break;
 
     case HID_ITF_PROTOCOL_NONE: 
-
-    
-    //Todo esto son pruebas y de momento funciona a medias y mal
      #ifdef TRACE
       printf("HID_MS(%d,%d): r[2..7]={0x%x,0x%x,0x%x,0x%x,0x%x,0x%x},r[0]=0x%x,l=%d\n",
        dev_addr, instance, 
@@ -249,11 +395,11 @@ void main() {
   board_init();
   printf("\n%s-%s\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING);
   
-  gpio_init(LVOUT);
+  gpio_init(LVOUT); // LVOUT  servia para dar los 3 voltios al levelshifter, seguramente para facilitar el montaje original
   //gpio_init(LVIN);
   gpio_set_dir(LVOUT, GPIO_OUT);
   //gpio_set_dir(LVIN, GPIO_OUT);
-  gpio_put(LVOUT, 1);
+  gpio_put(LVOUT, 1); //ahora se los damos desde el  pin de 3v del rp2040
   //gpio_put(LVIN, 1);
   
 
@@ -270,7 +416,7 @@ void main() {
     // procesamos el report de los db9 cada 100ms, que serian unas 10 veces por segungo
     // para no sobrecargar el sistema
     unsigned long currentMillisDB9=myMillis;
-    if (currentMillisDB9-last_millisDB9>db9_periodo){last_millisDB9=myMillis;db9Report();}
+    if (currentMillisDB9-last_millisDB9>db9_periodo){last_millisDB9=myMillis;db9Process();}
    
     tuh_task();
     kb_task();

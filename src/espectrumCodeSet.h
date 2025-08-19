@@ -28,7 +28,7 @@
       ESP_JOY2Y = 0x56,
       ESP_JOY2Z = 0x57
  */
-      
+#include "ps2x2pico.h"
 #define ESP_prefix 0xE2
 #define ESP_prefix_release 0xf0
 
@@ -57,3 +57,5 @@
 #define ESP_JOY2X  0x55
 #define ESP_JOY2Y  0x56
 #define ESP_JOY2Z  0x57
+
+void Esp_code_send(u8 pscode, bool is_key_pressed);

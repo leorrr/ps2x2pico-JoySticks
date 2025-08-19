@@ -34,18 +34,18 @@ project(ps2x2pico C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-add_executable(ps2x2pico src/ps2x2pico.c src/scancodesets.c src/ps2kb.c src/ps2ms.c src/ps2out.c src/ps2in.c  )#src/ps2gamepad.c
+add_executable(ps2x2pico src/ps2x2pico.c src/scancodesets.c src/ps2kb.c src/ps2ms.c src/ps2out.c src/ps2in.c  src/ps2gamepad.c src/espec_to_ps2.c src/neopixel.c src/xinput_host.c src/ps2x360.c src/DB9.c)
 
 pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ps2out.pio)
 pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ps2in.pio)
 pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ws2812.pio  OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 
 ### PS/2 output
-add_compile_definitions(LVOUT=13) # Level shifter pull-up voltage
+add_compile_definitions(LVOUT=13) # Level shifter pull-up voltage //Esto no lo usamos, pero se queda porque no molesta y hay referencias en el codigo
 add_compile_definitions(KBOUT=11) # Keyboard data pin, clock pin is 12
 add_compile_definitions(MSOUT=14) # Mouse data pin, clock pin is 15
 
-### PS/2 input 
+### PS/2 input //Esto no lo usamos, pero se queda porque no molesta y hay referencias en el codigo
 add_compile_definitions(LVIN=5) # Level shifter pull-up voltage
 add_compile_definitions(KBIN=3) # Keyboard data pin, clock pin is 4
 add_compile_definitions(MSIN=6) # Mouse data pin, clock pin is 7
@@ -57,8 +57,20 @@ if (MS_RATE_HOST_CONTROL)
     add_compile_definitions(MS_RATE_HOST_CONTROL)
 endif()
 
-pico_set_program_name(ps2x2pico "ps2x2pico-joystick")
-pico_set_program_version(ps2x2pico "Version-20250309")
+###Xinput_host soporte para gamepad xbox 360
+
+add_library(xinput_host INTERFACE)
+target_sources(xinput_host INTERFACE
+    ${CMAKE_CURRENT_LIST_DIR}src/xinput_host.c
+)
+target_include_directories(xinput_host INTERFACE ${CMAKE_CURRENT_LIST_DIR}src)
+target_link_libraries(xinput_host INTERFACE tinyusb)
+
+### /Xinput_host soporte para gamepad xbox 360/
+
+
+pico_set_program_name(ps2x2pico "ps2x2pico-joystick3.0 DB9+USB+x360")
+pico_set_program_version(ps2x2pico "Version-202500819")
 
 pico_enable_stdio_uart(ps2x2pico 1)
 pico_enable_stdio_usb(ps2x2pico 0)

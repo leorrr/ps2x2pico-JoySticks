@@ -1,3 +1,6 @@
+#include "ps2x2pico.h"
+
+
 //defimos unos cuantos colores
 #define rojo put_rgb(0xff, 0x00, 0x00)
 #define verde put_rgb(0xff, 0xff, 0x00)
@@ -8,3 +11,8 @@
 #define naranja put_rgb(0xfa,0xad,0x08)
 #define azulito put_rgb(0x03,0xe8,0xfa)
 #define amarillo put_rgb(0xf6,0xfa,0x03)
+
+void neopixel_init();
+void put_pixel(uint32_t pixel_grb);
+void put_rgb(uint8_t red, uint8_t green, uint8_t blue);
+

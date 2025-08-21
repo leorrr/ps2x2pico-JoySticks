@@ -78,7 +78,7 @@ typedef struct {
 x360PadState x360Pad1={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto
 x360PadState x360Pad2={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto
 
-void readx360pad1(x360PadState *state,u16 const* report)
+void readx360pad1(x360PadState *state,int16_t const* report)
 {
        uint16_t btn = report[0];
        state->d_up =(btn & XINPUT_GAMEPAD_DPAD_UP)?1:0; //esto se llama operador ternario
@@ -92,23 +92,25 @@ void readx360pad1(x360PadState *state,u16 const* report)
        state->back =(btn & XINPUT_GAMEPAD_BACK)?1:0;
        state->start = (btn & XINPUT_GAMEPAD_START)?1:0;
        state->guide = (btn & XINPUT_GAMEPAD_GUIDE)?1:0;
+       state->Lshoulder = (btn & XINPUT_GAMEPAD_LEFT_SHOULDER)?1:0;
+       state->Rshoulder=(btn & XINPUT_GAMEPAD_RIGHT_SHOULDER)?1:0;
+       state->Lbumper = (btn & XINPUT_GAMEPAD_LEFT_THUMB)?1:0;
+       state->Rbumper=(btn & XINPUT_GAMEPAD_RIGHT_THUMB)?1:0;
        state->Ltrigger = (report[1] > 100) ?1:0;
        state->Rtrigger = (report[2] > 10) ?1:0;
-       state->Lbumper = (btn & XINPUT_GAMEPAD_LEFT_SHOULDER)?1:0;
-       state->Rbumper=(btn & XINPUT_GAMEPAD_RIGHT_SHOULDER)?1:0;
-       state->ls_up=(report[4] >= DEADZONE)?1:0;
-       state->ls_down=(report[4] >= -DEADZONE)?1:0;
+       state->ls_up=(report[4] > DEADZONE)?1:0;
+       state->ls_down=(report[4] < -DEADZONE)?1:0;
        state->ls_left=(report[3] > DEADZONE)?1:0;
-       state->ls_right=(report[3] > -DEADZONE)?1:0;
+       state->ls_right=(report[3] < -DEADZONE)?1:0;
        state->rs_up=(report[5] > DEADZONE)?1:0;
-       state->rs_down=(report[5] > -DEADZONE)?1:0;
+       state->rs_down=(report[5] < -DEADZONE)?1:0;
        state->rs_left=(report[6] > DEADZONE)?1:0;
-       state->rs_right=(report[6] > -DEADZONE)?1:0;
+       state->rs_right=(report[6] < -DEADZONE)?1:0;
 
 }
 
-void readx360Pad2(x360PadState *state,u16 const* report)
-{      uint16_t btn = report[0];
+void readx360Pad2(x360PadState *state,int16_t const* report)
+{     uint16_t btn = report[0];
        state->d_up =(btn & XINPUT_GAMEPAD_DPAD_UP)?1:0; //esto se llama operador ternario
        state->d_down = (btn & XINPUT_GAMEPAD_DPAD_DOWN)?1:0;
        state->d_left = (btn & XINPUT_GAMEPAD_DPAD_LEFT)?1:0;
@@ -120,31 +122,32 @@ void readx360Pad2(x360PadState *state,u16 const* report)
        state->back =(btn & XINPUT_GAMEPAD_BACK)?1:0;
        state->start = (btn & XINPUT_GAMEPAD_START)?1:0;
        state->guide = (btn & XINPUT_GAMEPAD_GUIDE)?1:0;
-       state->Ltrigger = (report[1] > 10) ?1:0;
-       state->Rtrigger = (report[2] > 10) ?1:0;
+       state->Lshoulder = (btn & XINPUT_GAMEPAD_LEFT_SHOULDER)?1:0;
+       state->Rshoulder=(btn & XINPUT_GAMEPAD_RIGHT_SHOULDER)?1:0;
        state->Lbumper = (btn & XINPUT_GAMEPAD_LEFT_THUMB)?1:0;
        state->Rbumper=(btn & XINPUT_GAMEPAD_RIGHT_THUMB)?1:0;
+       state->Ltrigger = (report[1] > 100) ?1:0;
+       state->Rtrigger = (report[2] > 10) ?1:0;
        state->ls_up=(report[4] > DEADZONE)?1:0;
-       state->ls_down=(report[4] > -DEADZONE)?1:0;
+       state->ls_down=(report[4] < -DEADZONE)?1:0;
        state->ls_left=(report[3] > DEADZONE)?1:0;
-       state->ls_right=(report[3] > -DEADZONE)?1:0;
+       state->ls_right=(report[3] < -DEADZONE)?1:0;
        state->rs_up=(report[5] > DEADZONE)?1:0;
-       state->rs_down=(report[5] > -DEADZONE)?1:0;
+       state->rs_down=(report[5] < -DEADZONE)?1:0;
        state->rs_left=(report[6] > DEADZONE)?1:0;
-       state->rs_right=(report[6] > -DEADZONE)?1:0;
+       state->rs_right=(report[6] < -DEADZONE)?1:0;
 
 }
-
 //void x360Process1(u16 const* report)
 void x360Process1(int16_t myreport[])
 
 { 
 /*
-        if (myreport[3] > DEADZONE)        printf("Stick Izq →\n");
+        if (myreport[3] > DEADZONE)        printf("Stick Izq → \n");
         else if (myreport[3]< -DEADZONE)  printf("Stick Izq ←\n");
 
-        if (myreport[4] > DEADZONE)        printf("Stick Izq ↑\n");
-        else if (myreport[4] < -DEADZONE)  printf("Stick Izq ↓\n");
+        if (myreport[4] > DEADZONE)        printf("Stick Izq ↑ %d\n",myreport[4]);
+        else if (myreport[4] < -DEADZONE)  printf("Stick Izq ↓ %d\n",myreport[4]);
 
         // --- Stick derecho ---
         if (myreport[5] > DEADZONE)        printf("Stick Der →\n");
@@ -201,16 +204,16 @@ if (x360Pad1.d_up==1 && x360Pad1.lastd_up==1){Esp_code_send(ESP_JOY1UP,1);} //si
 else if (x360Pad1.d_up==0 && x360Pad1.lastd_up==1){Esp_code_send(ESP_JOY1UP,0);x360Pad1.lastd_up=0;}//si hemos soltado
 if (x360Pad1.d_up==1 && x360Pad1.lastd_up==0){Esp_code_send(ESP_JOY1UP,1);x360Pad1.lastd_up=1; }//Lo acabamos de pulsar
 
-/* //arriba LS
+ //arriba LS
 if (x360Pad1.ls_up==1 && x360Pad1.lastls_up==1){Esp_code_send(ESP_JOY1UP,1);} //si esta pulsado
 else if (x360Pad1.ls_up==0 && x360Pad1.lastls_up==1){Esp_code_send(ESP_JOY1UP,0);x360Pad1.lastls_up=0;}//si hemos soltado
 if (x360Pad1.ls_up==1 && x360Pad1.lastls_up==0){Esp_code_send(ESP_JOY1UP,1);x360Pad1.lastls_up=1;}//Lo acabamos de pulsar
 
 //abajo LS
-
+//printf ("x360Pad1.ls_down= %d\n",x360Pad1.ls_down);
 if (x360Pad1.ls_down==1 && x360Pad1.lastls_down==1){Esp_code_send(ESP_JOY1DOWN,1);} //si esta pulsado
 else if (x360Pad1.ls_down==0 && x360Pad1.lastls_down==1){Esp_code_send(ESP_JOY1DOWN,0);x360Pad1.lastls_down=0;}//si hemos soltado
-if (x360Pad1.ls_down==1 && x360Pad1.lastls_down==0){Esp_code_send(ESP_JOY1DOWN,1);x360Pad1.lastls_down=1;}//Lo acabamos de pulsar */
+if (x360Pad1.ls_down==1 && x360Pad1.lastls_down==0){Esp_code_send(ESP_JOY1DOWN,1);x360Pad1.lastls_down=1;}//Lo acabamos de pulsar
 
 //Abajo
 if (x360Pad1.d_down==1 && x360Pad1.lastd_down==1){Esp_code_send(ESP_JOY1DOWN,1);} //si esta pulsado
@@ -273,8 +276,10 @@ if (x360Pad1.Rbumper==1 && x360Pad1.lastRbumper==0){Esp_code_send(ESP_JOY1Z,1);x
 
 void x360Process2(int16_t myreport[])
 
-{
+ { 
+       return;
 
+/*
           readx360pad2(&x360Pad2,myreport);
      
 
@@ -341,5 +346,5 @@ if (x360Pad2.Ltrigger==1 && x360Pad2.lastLtrigger==0){Esp_code_send(ESP_JOY2C,1)
 if (x360Pad2.Rtrigger==1 && x360Pad2.lastRtrigger==1){Esp_code_send(ESP_JOY2Z,1);} //si esta pulsado
 else if (x360Pad2.Rtrigger==0 && x360Pad2.lastRtrigger==1){Esp_code_send(ESP_JOY2Z,0);x360Pad2.lastRtrigger=0;}//si hemos soltado
 if (x360Pad2.Rtrigger==1 && x360Pad2.lastRtrigger==0){Esp_code_send(ESP_JOY2Z,1);x360Pad2.lastRtrigger=1;}//Lo acabamos de pulsar
-
+*/
 }

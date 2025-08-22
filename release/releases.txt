@@ -109,3 +109,4 @@ Solucionados los problemas con el raton y el joystick ahora parece que todo func
 		- Gamepad1 USB X360: ok
 		- Gamepas2 usb X360: ?
 
+202508021ps2x2picoESPectrumKeyCode_BETA.uf2 Soporte para Stick analogico izquierdo y correccion de errores

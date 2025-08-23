@@ -11,10 +11,11 @@
 //#include "ps2x2pico.h"
 //#include "xinput_host.h"
 #include "ps2x360.h"
-#define DEADZONE 9000
+#define DEADZONE 8000
 
 
 /*
+
 //leo
 
 
@@ -27,12 +28,14 @@ typedef struct {
        bool buttonA;
        bool buttonB;
        bool buttonX;
-       bool ButtonY;
+       bool buttonY;
        bool back;
        bool start;
        bool guide;
        bool Ltrigger;
        bool Rtrigger;
+       bool Lshoulder;
+       bool Rshoulder;
        bool Lbumper;
        bool Rbumper;
        bool ls_up;
@@ -51,12 +54,14 @@ typedef struct {
        bool lastbuttonA;
        bool lastbuttonB;
        bool lastbuttonX;
-       bool lastButtonY;
+       bool lastbuttonY;
        bool lastback;
        bool laststart;
        bool lastguide;
        bool lastLtrigger;
        bool lastRtrigger;
+       bool lastLshoulder;
+       bool lastRshoulder;
        bool lastLbumper;
        bool lastRbumper;
        bool lastls_up;
@@ -68,6 +73,7 @@ typedef struct {
        bool lastrs_left;
        bool lastrs_right;
    } x360PadState;
+
 //leo   
 */
 //inicializa los valores por defecto de la estructura, En DB9 como el pull up de los gpio estan activado
@@ -77,6 +83,9 @@ typedef struct {
 
 x360PadState x360Pad1={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto
 x360PadState x360Pad2={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto
+
+uint8_t myx360Mouse[3]={0}; //inicializamos la estrucutura con el valores por defecto
+
 
 void readx360pad1(x360PadState *state,int16_t const* report)
 {
@@ -97,7 +106,17 @@ void readx360pad1(x360PadState *state,int16_t const* report)
        state->Lbumper = (btn & XINPUT_GAMEPAD_LEFT_THUMB)?1:0;
        state->Rbumper=(btn & XINPUT_GAMEPAD_RIGHT_THUMB)?1:0;
        state->Ltrigger = (report[1] > 100) ?1:0;
-       state->Rtrigger = (report[2] > 10) ?1:0;
+       state->Rtrigger = (report[2] > 10) ?2:0;
+
+       state->ls_up=(report[4] > 0)?1:0;
+       state->ls_down=(report[4] < 0)?1:0;
+       state->ls_left=(report[3] < 0)?1:0;
+       state->ls_right=(report[3] > 0)?1:0;
+       state->rs_up=(report[5] > 9000)?1:0;
+       state->rs_down=(report[5] < -9000)?1:0;
+       state->rs_left=(report[6] > 9000)?1:0;
+       state->rs_right=(report[6] < -9000)?1:0;
+       /*
        state->ls_up=(report[4] > DEADZONE)?1:0;
        state->ls_down=(report[4] < -DEADZONE)?1:0;
        state->ls_left=(report[3] < -DEADZONE)?1:0;
@@ -105,7 +124,7 @@ void readx360pad1(x360PadState *state,int16_t const* report)
        state->rs_up=(report[5] > DEADZONE)?1:0;
        state->rs_down=(report[5] < -DEADZONE)?1:0;
        state->rs_left=(report[6] > DEADZONE)?1:0;
-       state->rs_right=(report[6] < -DEADZONE)?1:0;
+       state->rs_right=(report[6] < -DEADZONE)?1:0;*/
 
 }
 
@@ -128,6 +147,16 @@ void readx360Pad2(x360PadState *state,int16_t const* report)
        state->Rbumper=(btn & XINPUT_GAMEPAD_RIGHT_THUMB)?1:0;
        state->Ltrigger = (report[1] > 100) ?1:0;
        state->Rtrigger = (report[2] > 10) ?1:0;
+       
+       state->ls_up=(report[4]>0)?1:0;
+       state->ls_down=(report[4] < 0)?1:0;
+       state->ls_left=(report[3] < 0)?1:0;
+       state->ls_right=(report[3] > 0)?1:0;
+       state->rs_up=(report[5] > 0)?1:0;
+       state->rs_down=(report[5] < 0)?1:0;
+       state->rs_left=(report[6] > 0)?1:0;
+       state->rs_right=(report[6] < 0)?1:0;
+       /*
        state->ls_up=(report[4] > DEADZONE)?1:0;
        state->ls_down=(report[4] < -DEADZONE)?1:0;
        state->ls_left=(report[3] < -DEADZONE)?1:0;
@@ -135,7 +164,7 @@ void readx360Pad2(x360PadState *state,int16_t const* report)
        state->rs_up=(report[5] > DEADZONE)?1:0;
        state->rs_down=(report[5] < -DEADZONE)?1:0;
        state->rs_left=(report[6] > DEADZONE)?1:0;
-       state->rs_right=(report[6] < -DEADZONE)?1:0;
+       state->rs_right=(report[6] < -DEADZONE)?1:0;*/
 
 }
 //void x360Process1(u16 const* report)
@@ -195,7 +224,7 @@ void x360Process1(int16_t myreport[])
 
         if (report[6] > DEADZONE)      printf("Stick Der ↑\n");
         else if (report[6] < -DEADZONE) printf("Stick Der ↓\n"); */
-
+//printf("report0(Buttons): %04x, report1(BLT): %02x, report2(BRT): %02x, report3(LX): %d, report4(LY): %d, report5(RX): %d report6(RY): %d \n",myreport[0],myreport[1],myreport[2],myreport[3],myreport[4],myreport[5],myreport[6]);
        readx360pad1(&x360Pad1,myreport);
 
 //arriba
@@ -285,6 +314,18 @@ if (x360Pad1.Lshoulder==1 && x360Pad1.lastLshoulder==0){Esp_code_send(ESP_JOY1C,
 if (x360Pad1.Rshoulder==1 && x360Pad1.lastRshoulder==1){Esp_code_send(ESP_JOY1Z,1);} //si esta pulsado
 else if (x360Pad1.Rshoulder==0 && x360Pad1.lastRshoulder==1){Esp_code_send(ESP_JOY1Z,0);x360Pad1.lastRshoulder=0;}//si hemos soltado
 if (x360Pad1.Rshoulder==1 && x360Pad1.lastRshoulder==0){Esp_code_send(ESP_JOY1Z,1);x360Pad1.lastRshoulder=1;}//Lo acabamos de pulsar
+
+/*//emula el raton con el stick derecho y los botones del raton con los triggers
+if (x360Pad1.Ltrigger>50){myx360Mouse[0]|=leftButton;} //boton izquierdo
+if (x360Pad1.Rtrigger>50){myx360Mouse[0]|=rightButton;} //boton derecho
+if (x360Pad1.rs_left==1){myx360Mouse[1]=255;}
+if (x360Pad1.rs_right==1){myx360Mouse[1]=0;}
+if (x360Pad1.rs_up==1){myx360Mouse[2]=255;}
+if (x360Pad1.rs_down==1){myx360Mouse[2]=0;}
+//printf("Mouse: %d %d %d\n", myx360Mouse[0], myx360Mouse[1], myx360Mouse[2]);
+//ms_usb_receive(myx360Mouse);
+
+//myx360Mouse[0]=0;myx360Mouse[1]=0;myx360Mouse[2]=0; //reseteamos el raton*/
 
 }
 

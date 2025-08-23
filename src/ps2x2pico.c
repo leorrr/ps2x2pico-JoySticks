@@ -62,9 +62,46 @@ u8 gamepadINST1=0;
 u8 gamepadADDR2= 0;
 u8 gamepadINST2=0;
 int reportSum=269;
-//leo
-//#define DEADZONE 8000
-int16_t gamepad_report[7] = {0};
+
+//Esta funciona establiza las lecturas analogicas en los gamepad viejos, que ya no son  tan precisos, como cuando eran nuevos
+#define ruido 8000
+int16_t removeNoise (int16_t valor) {
+  if (valor > -ruido && valor < ruido) {return 0; }// dentro de la zona muerta → 0  
+  return valor; // fuera de la zona muerta → mantener valor 
+}
+
+
+
+int16_t gamepad360_report[7] = {0}; //aqui guardaremos el report del gamepad
+u8 gameMouseStick_report[3] = {0}; //aqui guardaremos el report del mouseStick
+int mousebr=0;
+int mousebl=0;
+
+
+#define DEADZONESTICK 8000
+#define SCALE    32768.0f
+
+void process_stick_as_mouse(int16_t lx, int16_t ly)
+{
+    int8_t dx = 0;
+    int8_t dy = 0;
+
+    if (abs(lx) > DEADZONESTICK) {
+        dx = (int8_t)((lx / SCALE) *8); // escala a ±10
+    }
+    if (abs(ly) > DEADZONESTICK) {
+        dy = (int8_t)((-ly / SCALE) * 8); // invertir Y (arriba negativo → arriba en pantalla)
+    }
+
+    if (dx || dy) {
+       // mouse_move(dx, dy);
+       gameMouseStick_report[1]=dx;
+       gameMouseStick_report[2]=dy;
+       //printf("dx: %d, dy: %d\n", dx, dy);
+    }
+}
+
+
 //xinput_host____________________________________
 
 //Since https://github.com/hathach/tinyusb/pull/2222, we can add in custom vendor drivers easily
@@ -81,14 +118,6 @@ void tuh_xinput_report_received_cb(uint8_t dev_addr, uint8_t instance, xinputh_i
     const char* type_str;
 unsigned long currentMillisXinput=myMillis;
 
-if (currentMillisXinput-last_millisXinput>xinput_Periodo)
-{
-
-last_millisXinput=myMillis;
-   if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS)
-
-   
-    {
       
         switch (xid_itf->type)
         {
@@ -101,86 +130,37 @@ last_millisXinput=myMillis;
 
         if (xid_itf->connected && xid_itf->new_pad_data)
         {
-         // uint16_t my360report[]={p->wButtons,p->bLeftTrigger,p->bLeftTrigger ,p->sThumbLX,p->sThumbLY,p->sThumbRX,p->sThumbRY};
-          /*uint16_t myx360buttons=p->wButtons;
-          uint8_t myx360blt=p->bLeftTrigger;
-          uint8_t my360brt=p->bRightTrigger;
-          int16_t my360stlx=p->sThumbLX;
-          int16_t my360stly=p->sThumbLY;
-          int16_t my360strx=p->sThumbRX;
-          int16_t my360stry=p->sThumbRY;
+         
 
-          int16_t mmy360report[]={myx360buttons,myx360blt,my360brt,my360stlx,my360stly,my360strx,my360stry}; */
-        /*uint16_t btn = p->wButtons;
-        uint8_t lt = p->bLeftTrigger;
-        uint8_t rt = p->bRightTrigger;
-        int16_t lx = p->sThumbLX;
-        int16_t ly = p->sThumbLY;
-        int16_t rx = p->sThumbRX;
-        int16_t ry = p->sThumbRY;*/
+        gamepad360_report[0] = p->wButtons;
+        gamepad360_report[1] = p->bLeftTrigger;
+        gamepad360_report[2] = p->bRightTrigger;
+        gamepad360_report[3] = removeNoise(p->sThumbLX);
+        gamepad360_report[4] = removeNoise(p->sThumbLY);
+        gamepad360_report[5] = p->sThumbRX;
+        gamepad360_report[6] = p->sThumbRY;
+        process_stick_as_mouse(gamepad360_report[5], gamepad360_report[6]);
 
-        gamepad_report[0] = p->wButtons;
-        gamepad_report[1] = p->bLeftTrigger;
-        gamepad_report[2] = p->bRightTrigger;
-        gamepad_report[3] = p->sThumbLX;
-        gamepad_report[4] = p->sThumbLY;
-        gamepad_report[5] = p->sThumbRX;
-        gamepad_report[6] = p->sThumbRY;
 
-/*
-//x360Process1();
-// --- Stick izquierdo ---
-        if (gamepad_report[3] > DEADZONE)        printf("Stick Izq →\n");
-        else if (gamepad_report[3]< -DEADZONE)  printf("Stick Izq ←\n");
+        if (gamepad360_report[1]>10){mousebl=1;}else{mousebl=0;}
+        if (gamepad360_report[2]>10){mousebr=2;}else{mousebr=0;}
 
-        if (gamepad_report[4] > DEADZONE)        printf("Stick Izq ↑\n");
-        else if (gamepad_report[4] < -DEADZONE)  printf("Stick Izq ↓\n");
+        gameMouseStick_report[0]=(mousebl+mousebr);
 
-        // --- Stick derecho ---
-        if (gamepad_report[5] > DEADZONE)        printf("Stick Der →\n");
-        else if (gamepad_report[5] < -DEADZONE)  printf("Stick Der ←\n");
+        //printf("gameMouseStick_report: %d %d %d\n", gameMouseStick_report[0], gameMouseStick_report[1], gameMouseStick_report[2]);
+        ms_usb_receive(gameMouseStick_report);
+        gameMouseStick_report[0]=0; gameMouseStick_report[1]=0;gameMouseStick_report[2]=0; //reseteamos report
 
-        if (gamepad_report[6] > DEADZONE)        printf("Stick Der ↑\n");
-        else if (gamepad_report[6] < -DEADZONE)  printf("Stick Der ↓\n");
+if (currentMillisXinput-last_millisXinput>xinput_Periodo)
+{
 
-        // --- Gatillos ---
-        if (gamepad_report[1] > 10)              printf("Trigger Izq presionado (%d)\n", gamepad_report[1]);
-        if (gamepad_report[2] > 10)              printf("Trigger Der presionado (%d)\n", gamepad_report[2]);
-
-        uint16_t btn = (uint16_t)gamepad_report[0];
-        // --- Botones ---
-        if (btn & XINPUT_GAMEPAD_A)      printf("Botón A\n");
-        if (btn & XINPUT_GAMEPAD_B)      printf("Botón B\n");
-        if (btn & XINPUT_GAMEPAD_X)      printf("Botón X\n");
-        if (btn & XINPUT_GAMEPAD_Y)      printf("Botón Y\n");
-
-        if (btn & XINPUT_GAMEPAD_LEFT_SHOULDER)  printf("Botón LB\n");
-        if (btn & XINPUT_GAMEPAD_RIGHT_SHOULDER) printf("Botón RB\n");
-
-        if (btn & XINPUT_GAMEPAD_BACK)   printf("Botón Back\n");
-        if (btn & XINPUT_GAMEPAD_START)  printf("Botón Start\n");
-
-        if (btn & XINPUT_GAMEPAD_LEFT_THUMB)  printf("Stick Izq presionado\n");
-        if (btn & XINPUT_GAMEPAD_RIGHT_THUMB) printf("Stick Der presionado\n");
-
-        if (btn & XINPUT_GAMEPAD_DPAD_UP)    printf("DPad ↑\n");
-        if (btn & XINPUT_GAMEPAD_DPAD_DOWN)  printf("DPad ↓\n");
-        if (btn & XINPUT_GAMEPAD_DPAD_LEFT)  printf("DPad ←\n");
-        if (btn & XINPUT_GAMEPAD_DPAD_RIGHT) printf("DPad →\n");
-*/
-          //printf("%04x, ,%02x, %02x, %d, %0d, %d, %d", myx360buttons,myx360blt,my360brt,my360stlx,my360stly,my360strx,my360stry);
-         //printf("kkk: %04x",myx360buttons);
-
-         //printf("kkk: %04x",mmy360report[0]);
-         x360Process1(gamepad_report);
-
-        
-        }
+last_millisXinput=myMillis;
+   if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS){ x360Process1(gamepad360_report);}
     }
-  }
+  
     tuh_xinput_receive_report(dev_addr, instance);
 }
-
+}
 void tuh_xinput_mount_cb(uint8_t dev_addr, uint8_t instance, const xinputh_interface_t *xinput_itf)
 {
     printf("XINPUT MOUNTED %02x %d\n", dev_addr, instance);
@@ -342,8 +322,13 @@ void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 
       printf("HID_MS(%d,%d)\n", dev_addr, instance);
       #endif
       #endif
-
+      /*
+      printf ("addr %04x instance %04x report len %d \n",dev_addr,instance,len);
+      for (int xx=0;xx<len;xx++) {
+          printf ("report mouse[%d]: %04x \n",xx,report[xx]);
+      }*/
       ms_usb_receive(report);
+
       tuh_hid_receive_report(dev_addr, instance);
     break;
 

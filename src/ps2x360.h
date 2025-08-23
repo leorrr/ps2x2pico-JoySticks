@@ -18,6 +18,9 @@
 #define XINPUT_GAMEPAD_X 0x4000
 #define XINPUT_GAMEPAD_Y 0x8000
 #define MAX_PACKET_SIZE 32
+#define leftButton 0x01
+#define rightButton 0x02
+
 
 typedef struct {
        bool d_up;
@@ -72,6 +75,18 @@ typedef struct {
        bool lastrs_left;
        bool lastrs_right;
    } x360PadState;
+
+   typedef struct {
+      uint8_t x360MouseButton;
+      uint8_t x360MouseX;
+      uint8_t x360MouseY;
+
+      uint8_t last_x360ButtonMouse;
+      uint8_t last_x360MouseX;
+      uint8_t last_x360MouseY;
+   } x360MouseState;
+
+
 
     void readx360pad1(x360PadState *state,int16_t const* report);
     void readx360pad2(x360PadState *state,int16_t const* report);

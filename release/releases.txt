@@ -110,3 +110,5 @@ Solucionados los problemas con el raton y el joystick ahora parece que todo func
 		- Gamepas2 usb X360: ?
 
 202508021ps2x2picoESPectrumKeyCode_BETA.uf2 Soporte para Stick analogico izquierdo y correccion de errores
+
+20250824ps2x2picoESPectrumKeyCode_BETA.uf2 Emulacion de ratón con stick analogico derecho y botones con gatillos analogicos

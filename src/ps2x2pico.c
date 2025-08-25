@@ -73,7 +73,7 @@ int16_t removeNoise (int16_t valor) {
 
 
 int16_t gamepad360_report[7] = {0}; //aqui guardaremos el report del gamepad
-u8 gameMouseStick_report[3] = {0}; //aqui guardaremos el report del mouseStick
+u8 gameMouseStick_report[3] = {0}; //aqui guardaremos el report del mouseStick tal vez tenga que ser int8_t pero asi funciona
 int mousebr=0;
 int mousebl=0;
 
@@ -116,7 +116,7 @@ void tuh_xinput_report_received_cb(uint8_t dev_addr, uint8_t instance, xinputh_i
     //uint32_t report360[]={p->wButtons,p->bLeftTrigger,p->bRightTrigger,p->sThumbLX,p->sThumbLY,p->sThumbRX,p->sThumbRY};
 
     const char* type_str;
-unsigned long currentMillisXinput=myMillis;
+//unsigned long currentMillisXinput=myMillis;
 
       
         switch (xid_itf->type)
@@ -131,33 +131,38 @@ unsigned long currentMillisXinput=myMillis;
         if (xid_itf->connected && xid_itf->new_pad_data)
         {
          
-
+// cargamos el report usb en el array gamepad360_report
         gamepad360_report[0] = p->wButtons;
         gamepad360_report[1] = p->bLeftTrigger;
         gamepad360_report[2] = p->bRightTrigger;
-        gamepad360_report[3] = removeNoise(p->sThumbLX);
-        gamepad360_report[4] = removeNoise(p->sThumbLY);
-        gamepad360_report[5] = p->sThumbRX;
-        gamepad360_report[6] = p->sThumbRY;
+        gamepad360_report[3] = removeNoise(p->sThumbLX);//Stick izquierdo horizontal
+        gamepad360_report[4] = removeNoise(p->sThumbLY);//Stick izquierdo vertical
+        gamepad360_report[5] = p->sThumbRX;//Stick derecho horizontal
+        gamepad360_report[6] = p->sThumbRY;//Stick derecho vertical
+
+
+        // procesamos los sticks como mouse para el movimiento
         process_stick_as_mouse(gamepad360_report[5], gamepad360_report[6]);
-
-
         if (gamepad360_report[1]>10){mousebl=1;}else{mousebl=0;}
         if (gamepad360_report[2]>10){mousebr=2;}else{mousebr=0;}
-
+        //procesamos los botones del mouse
         gameMouseStick_report[0]=(mousebl+mousebr);
 
         //printf("gameMouseStick_report: %d %d %d\n", gameMouseStick_report[0], gameMouseStick_report[1], gameMouseStick_report[2]);
-        ms_usb_receive(gameMouseStick_report);
-        gameMouseStick_report[0]=0; gameMouseStick_report[1]=0;gameMouseStick_report[2]=0; //reseteamos report
+        ms_usb_receive(gameMouseStick_report); //se lo enviamos al ps2 a traves de esta funcion
+        gameMouseStick_report[0]=0; gameMouseStick_report[1]=0;gameMouseStick_report[2]=0; //reseteamos report del mouse a 0
+
+
+// procesamos el resto de valores del report, solo si ha pasado el periodo establecido
+unsigned long currentMillisXinput=myMillis; // Guardamos el tiempo actual
 
 if (currentMillisXinput-last_millisXinput>xinput_Periodo)
 {
-
 last_millisXinput=myMillis;
    if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS){ x360Process1(gamepad360_report);}
     }
   
+    // le indicamos al sistema que ya estamos preparados para recibir otro paquete
     tuh_xinput_receive_report(dev_addr, instance);
 }
 }

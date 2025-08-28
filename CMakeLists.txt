@@ -41,14 +41,14 @@ pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ps2in.pio)
 pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ws2812.pio  OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 
 ### PS/2 output
-add_compile_definitions(LVOUT=13) # Level shifter pull-up voltage //Esto no lo usamos, pero se queda porque no molesta y hay referencias en el codigo
-add_compile_definitions(KBOUT=11) # Keyboard data pin, clock pin is 12
-add_compile_definitions(MSOUT=14) # Mouse data pin, clock pin is 15
+add_compile_definitions(LVOUT=13) # Level shifter pull-up voltage //Pin para proporcionar 3v en el LevelShifter
+add_compile_definitions(KBOUT=11) # Keyboard data pin 11, clock pin is 12
+add_compile_definitions(MSOUT=14) # Mouse data pin 14, clock pin is 15
 
-### PS/2 input //Esto no lo usamos, pero se queda porque no molesta y hay referencias en el codigo
+### PS/2 input //Esto no lo usamos, pero se queda porque no molesta y hay referencias en el codigo, sirve para hacer el passtrough ps2 en el codigo de NoOne
 add_compile_definitions(LVIN=5) # Level shifter pull-up voltage
-add_compile_definitions(KBIN=3) # Keyboard data pin, clock pin is 4
-add_compile_definitions(MSIN=6) # Mouse data pin, clock pin is 7
+add_compile_definitions(KBIN=3) # Keyboard data pin 3, clock pin is 4
+add_compile_definitions(MSIN=6) # Mouse data pin 6, clock pin is 7
 
 add_compile_definitions(PICO_PANIC_FUNCTION=reset)
 
@@ -69,8 +69,8 @@ target_link_libraries(xinput_host INTERFACE tinyusb)
 ### /Xinput_host soporte para gamepad xbox 360/
 
 
-pico_set_program_name(ps2x2pico "ps2x2pico-joystick3.0 DB9+USB+x360")
-pico_set_program_version(ps2x2pico "Version-202500819")
+pico_set_program_name(ps2x2pico "ps2x2pico-joystick_2xDB9_USB(KeyBoard_Mouse_GmPaD_X360(GmPaD¬Mouse))")
+pico_set_program_version(ps2x2pico "Version-202500828")
 
 pico_enable_stdio_uart(ps2x2pico 1)
 pico_enable_stdio_usb(ps2x2pico 0)

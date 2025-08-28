@@ -7,8 +7,8 @@
 #define joy1Left 4 
 #define joy1Right 5 
 #define joy1Fire 6 
-#define joy1Select 7 // Para joyStick SEGA
-#define joy1Start 8 // Para joyStick SEGA
+#define joy1Select 7 // Para usar con joyStick SEGA
+#define joy1Start 8 // Para usar con joyStick SEGA
 
 //Joy2
 #define joy2Up 29 
@@ -16,8 +16,8 @@
 #define joy2Left 27
 #define joy2Right 26 
 #define joy2Fire 10  
-#define joy2Select 9  // Para joyStick SEGA
-#define joy2Start 13  // Para joyStick SEGA
+#define joy2Select 9  // Para usar con joyStick SEGA
+#define joy2Start 13  // Para usar con joyStick SEGA
 
 #define DEBOUNCE_DELAY_MS 50  // Retardo para anti-rebote en milisegundos
 

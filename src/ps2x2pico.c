@@ -39,6 +39,36 @@
 #include "xinput_host.h"
 #include "ps2x360.h"
 
+//--------------------------------------------------------------------+
+// Para generar la fecha de compilacion
+//--------------------------------------------------------------------+
+
+const char *fecha_hora_build() {
+    static char out[13];
+    char m[4]; int y, d, mo, h, mi, s;
+
+    // Leer fecha y hora
+    sscanf(__DATE__, "%s %d %d", m, &d, &y);
+    sscanf(__TIME__, "%d:%d:%d", &h, &mi, &s);
+
+    // Convertir mes a número
+    switch(m[0]) {
+        case 'J': mo = (m[1]=='a')?1: (m[2]=='n')?6:7; break; // Jan, Jun, Jul
+        case 'F': mo = 2; break;
+        case 'M': mo = (m[2]=='r')?3:5; break;                // Mar, May
+        case 'A': mo = (m[1]=='p')?4:8; break;                // Apr, Aug
+        case 'S': mo = 9; break;
+        case 'O': mo = 10; break;
+        case 'N': mo = 11; break;
+        case 'D': mo = 12; break;
+    }
+
+    // Formato final AAAAMMDDHHMM
+    sprintf(out, "%04d%02d%02d%02d%02d", y, mo, d, h, mi);
+    return out;
+}
+
+
 #define myMillis to_ms_since_boot(get_absolute_time()) //nos da el tiempo en milisegundo desde que hemos arrancado la placa
 #define db9_periodo 50 //100 ms serian 10 veces por segundo
 #define gamePad_periodo 50
@@ -383,8 +413,9 @@ if(dev_addr==gamepadADDR2 && instance==gamepadINST2 ) {Gamepad2Process(report);t
 
 void main() {
   board_init();
-  printf("\n%s-%s\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING);
-  
+
+  printf("\n%s-%s %s\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING,fecha_hora_build());
+
   gpio_init(LVOUT); // LVOUT  servia para dar los 3 voltios al levelshifter, seguramente para facilitar el montaje original
   //gpio_init(LVIN);
   gpio_set_dir(LVOUT, GPIO_OUT);

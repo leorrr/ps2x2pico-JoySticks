@@ -2,6 +2,8 @@
 //Este codigo inicializa el joystick db 9 y ejecuta la rutina de lectura de Joystick y mapea su correspondiente codigo
 //Codigo inspirado por  por chatgpt
 // Joy1
+
+#include "ps2x2pico.h"
 #define joy1Up 2 
 #define joy1Down 3
 #define joy1Left 4 
@@ -17,7 +19,18 @@
 #define joy2Right 26 
 #define joy2Fire 10  
 #define joy2Select 9  // Para usar con joyStick SEGA
+//--------------------------
+#ifdef PCB1 // PCB estandar 
 #define joy2Start 1// Para usar con joyStick SEGA
+#endif
+
+#ifdef PCB2 // PCB personalizada
+#define joy2Start 13// Para usar con joyStick SEGA
+#endif
+
+//---------------------------
+
+//#define joy2Start 1// Para usar con joyStick SEGA
 
 #define DEBOUNCE_DELAY_MS 50  // Retardo para anti-rebote en milisegundos
 

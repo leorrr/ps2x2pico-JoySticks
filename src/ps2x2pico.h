@@ -29,6 +29,26 @@
 #include <stdint.h>
 #include <string.h>
 
+//----------------
+// ***********************************************************************************************************************
+// Especificamos que version es la que estamos compilando, la 1 que seria la normal                                      *
+// compatible con el proyecto de noOne https://github.com/No0ne/ps2x2pico y el de                                        *
+// destroyer https://github.com/destroyer-dcf/usb2ps2                                                                    *
+// o la version 2 que es para usar con mi pcb personalizada.                                                             *
+// La diferencia entre ambas pcb reside en la version 1, obtine los 3 voltios para usar el level shifter de GPIO 13,     *
+// mientras que en la version 2 obtenemos esos 3 voltios directamente del pin de 3 voltios de la Pico                    *
+// asi de este modo podemos usar el GPIO 13 como pin 9 del Joy 2 y liberamos el GPIO 0 que es usado como RX en la uart   *
+//                                                                                                                       *
+//********************************************************************************************************************** *
+
+//Descomenntar lo que proceda y comomentar lo que no, una cosa o la otra
+
+#define COMPATIBLE_PCB //  pcb compatible, 3v from GPIO 13, pin 9 joy2 GPIO 1
+
+//#define CROMS_PCB // pcb personalizada, 3v from pin 3v Pico, pin 9 joy2 GPIO 13
+
+//------------------
+
 typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;

@@ -40,7 +40,7 @@
 #include "ps2x360.h"
 
 //--------------------------------------------------------------------+
-// Para generar la fecha de compilacion
+// Para generar la fecha de compilacion by CHATGPT
 //--------------------------------------------------------------------+
 
 const char *fecha_hora_build() {
@@ -68,6 +68,9 @@ const char *fecha_hora_build() {
     return out;
 }
 
+#ifdef COMPATIBLE_PCB
+#define LVOUT 13
+#endif
 
 #define myMillis to_ms_since_boot(get_absolute_time()) //nos da el tiempo en milisegundo desde que hemos arrancado la placa
 #define db9_periodo 50 //100 ms serian 10 veces por segundo
@@ -75,7 +78,7 @@ const char *fecha_hora_build() {
 #define xinput_Periodo 50
 
 static void print_utf16(uint16_t *temp_buf, size_t buf_len);
-void print_device_descriptor(tuh_xfer_t* xfer);
+//void print_device_descriptor(tuh_xfer_t* xfer); // como no se usa en ninguna parte  lo desactivamos
 
 
 //unsigned long currentMillis; //almacena el tiempo actual
@@ -414,15 +417,26 @@ if(dev_addr==gamepadADDR2 && instance==gamepadINST2 ) {Gamepad2Process(report);t
 void main() {
   board_init();
 
-  printf("\n%s-%s %s\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING,fecha_hora_build());
+#ifdef COMPATIBLE_PCB
+char *pcbversion="Compatible_PCB para usar con el proyecto de NoOne y destroyer, y la PCB1 de leorrr";
+#endif
+#ifdef CROMS_PCB
+char *pcbversion="Croms_PCB para con la placa PCB2 de leorrr ps2x2pico-JoySticks";
+#endif
 
+  printf("\n\n%s-%s %s\n\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING,fecha_hora_build());
+  printf ("PCB: %s\n\n", pcbversion);
+
+  //---------------
+  #ifdef COMPATIBLE_PCB
   gpio_init(LVOUT); // LVOUT  servia para dar los 3 voltios al levelshifter, seguramente para facilitar el montaje original
   //gpio_init(LVIN);
   gpio_set_dir(LVOUT, GPIO_OUT);
   //gpio_set_dir(LVIN, GPIO_OUT);
   gpio_put(LVOUT, 1); //ahora se los damos desde el  pin de 3v del rp2040
   //gpio_put(LVIN, 1);
-  
+  #endif
+ //---------------------
 
 
   tusb_init();

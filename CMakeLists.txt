@@ -41,11 +41,13 @@ pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ps2in.pio)
 pico_generate_pio_header(ps2x2pico ${CMAKE_CURRENT_LIST_DIR}/src/ws2812.pio  OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 
 ### PS/2 output
-add_compile_definitions(LVOUT=13) # Level shifter pull-up voltage //Pin para proporcionar 3v en el LevelShifter
+#add_compile_definitions(LVOUT=13) # Level shifter pull-up voltage //Pin para proporcionar 3v en el LevelShifter
 add_compile_definitions(KBOUT=11) # Keyboard data pin 11, clock pin is 12
 add_compile_definitions(MSOUT=14) # Mouse data pin 14, clock pin is 15
 
 ### PS/2 input //Esto no lo usamos, pero se queda porque no molesta y hay referencias en el codigo, sirve para hacer el passtrough ps2 en el codigo de NoOne
+### ademas esta desactivada la inicializacion en el codigo, porque los gpios 5, 3 y 6 los usamos pata el db9 del joy1, y tambien interfiere con el pio usado
+### para el led rgb de la placa.
 add_compile_definitions(LVIN=5) # Level shifter pull-up voltage
 add_compile_definitions(KBIN=3) # Keyboard data pin 3, clock pin is 4
 add_compile_definitions(MSIN=6) # Mouse data pin 6, clock pin is 7

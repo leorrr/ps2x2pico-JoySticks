@@ -421,7 +421,7 @@ void main() {
 char *pcbversion="Compatible_PCB para usar con el proyecto de NoOne y destroyer, y la PCB1 de leorrr";
 #endif
 #ifdef CROMS_PCB
-char *pcbversion="Croms_PCB para con la placa PCB2 de leorrr ps2x2pico-JoySticks";
+char *pcbversion="Croms_PCB para usar con la placa PCB2 de leorrr ps2x2pico-JoySticks";
 #endif
 
   printf("\n\n%s-%s %s\n\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING,fecha_hora_build());

@@ -196,8 +196,9 @@ last_millisXinput=myMillis;
     }
   
     // le indicamos al sistema que ya estamos preparados para recibir otro paquete
-    tuh_xinput_receive_report(dev_addr, instance);
+    //tuh_xinput_receive_report(dev_addr, instance);
 }
+tuh_xinput_receive_report(dev_addr, instance);
 }
 void tuh_xinput_mount_cb(uint8_t dev_addr, uint8_t instance, const xinputh_interface_t *xinput_itf)
 {

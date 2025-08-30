@@ -112,3 +112,5 @@ Solucionados los problemas con el raton y el joystick ahora parece que todo func
 202508021ps2x2picoESPectrumKeyCode_BETA.uf2 Soporte para Stick analogico izquierdo y correccion de errores.
 
 20250828ps2x2picoESPectrumKeyCodeBETA.uf2 Emulación de ratón con stick analogico derecho y botones con gatillos analogicos
+
+202508301647ps2x2picoESPectrumKeyCodeBETA.uf2 Corrección de error en emulacion de raton en Gamepad x360, que provocaba que se relantizara la emulacion de ESPectrum, nuevo sistema automatico de nombre de version en el momento de compilación.

@@ -71,7 +71,7 @@ target_link_libraries(xinput_host INTERFACE tinyusb)
 ### /Xinput_host soporte para gamepad xbox 360/
 
 
-pico_set_program_name(ps2x2pico "ps2x2pico-joystick_2xDB9_USB(KeyBoard_Mouse_GamePaD_GamePadX360(GamePaD & MouseEmulation))")
+pico_set_program_name(ps2x2pico "ps2x2pico-joysticks")
 pico_set_program_version(ps2x2pico "Version: ")
 
 pico_enable_stdio_uart(ps2x2pico 1)

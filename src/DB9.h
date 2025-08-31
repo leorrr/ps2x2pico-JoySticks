@@ -24,7 +24,7 @@
 #define joy2Start 1// Para usar con joyStick SEGA
 #endif
 
-#ifdef PCB2 // PCB personalizada
+#ifdef CROMS_PCB // PCB personalizada
 #define joy2Start 13// Para usar con joyStick SEGA
 #endif
 

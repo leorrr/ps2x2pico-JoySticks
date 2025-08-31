@@ -416,7 +416,12 @@ if(dev_addr==gamepadADDR2 && instance==gamepadINST2 ) {Gamepad2Process(report);t
 }
 
 void main() {
-  board_init();
+  
+board_init();
+
+printf ("Iniciando sistema...Waiting for USB devices...\n");
+
+sleep_ms(2000); // esperamos dos segundos a que se estabilice la alimentacion
 
 #ifdef COMPATIBLE_PCB
 char *pcbversion="Compatible_PCB para usar con el proyecto de NoOne y destroyer, y la PCB1 de leorrr";
@@ -425,8 +430,10 @@ char *pcbversion="Compatible_PCB para usar con el proyecto de NoOne y destroyer,
 char *pcbversion="Croms_PCB para usar con la placa PCB2 de leorrr ps2x2pico-JoySticks";
 #endif
 
-  printf("\n\n%s-%s %s\n\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING,fecha_hora_build());
+  printf("\n\n%s - %s %s\n\n", PICO_PROGRAM_NAME, PICO_PROGRAM_VERSION_STRING,fecha_hora_build());
   printf ("PCB: %s\n\n", pcbversion);
+  printf("- USB Keyboard to ps2\n- Mouse to ps2\n- 2 joysticks DB9 to PS2 Espectrum Especial Codes.\n- USB GamePaD to ps2 ESPectrum Especial Codes\n- USB GamePadX360 to Ps2 ESPectrum Especial codes control direccional en cruceta y stick analogico izq\n  emulacion de Mouse en Stick Derecho y botones en gatillos analogicos\n\n");
+  printf("By leocroms@2025 https://github.com/leorrr/ps2x2pico-JoySticks\n\n");
 
   //---------------
   #ifdef COMPATIBLE_PCB

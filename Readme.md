@@ -22,7 +22,9 @@ He diseñado una placa nueva inspirada en la placa con Rp2040 Zero del usuario *
 ![JoyDB9toHeader](./images/joyDB8toHeader.JPG)
 ![Esquema](./images/CROMS_PCB/Ps2x2pico&joySticksEsquema_CROMS_PCB.jpg)
 ![Ps2x2pico](./images/CROMS_PCB/ps2x2pico-joysticks_CROMS_PCB+DB9toHeaders.jpg)
-Cuando la vi pense que lastima no aprovechar los pines que sobran.... y este es el resultado esta en fase beta, pero en principio es funcional,  el soporte para gamepad usb y los 2 puertos DB9 norma Atari es operativo mapaeado con los Ps2 Key ESpecial codes para usar con emulador ESPectrum, en resumen:
+![ALLsupport](./images/ALLsupport.jpg)
+
+Cuando la vi pense que lastima no aprovechar los pines que sobran.... y este es el resultado esta en fase beta, pero en principio es funcional,  el soporte para gamepad usb, Gamepad1 xBox con enmulacion de ratón en stick analogico derecho y botones en los gatillos y los 2 puertos DB9 norma Atari es operativo mapeado con los Ps2 Key ESpecial codes para usar con emulador.ESPectrum, en resumen:
 
  - Gamepad1 USB se corresponde al joystick 1 en emulador ESPectrum.
  - Gamepad2 USB se corresponde al joystick 2 en emulador ESPectrum.

@@ -1,0 +1,7 @@
+Lista de materiales para joyPcb 
+
+ - 2 DB9 macho PCB montaje d-sub 9 pines PCB conector RS232 aguja doblada de 90 grados DR9
+	( https://es.aliexpress.com/item/4001214300548.html?spm=a2g0o.order_list.order_list_main.10.1305194dPWC2Sy&gatewayAdapt=glo2esp )
+
+ - 2 header  1x9 pines 2,54mm ángulo recto cabezal de Pin de una sola fila macho conector de aguja de 90 grados
+	( https://es.aliexpress.com/item/1005006149080284.html?spm=a2g0o.order_list.order_list_main.68.2da9194dWU1ukM&gatewayAdapt=glo2esp )

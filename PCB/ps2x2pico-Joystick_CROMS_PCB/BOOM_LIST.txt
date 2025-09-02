@@ -1,19 +1,19 @@
 Lista de materiales para ps2x2pico-joysticks_CROMS_PCB
 
  - 1 RP2040-Zero RP2040  módulo de placa de desarrollo PICO, procesador Cortex M0 + de doble núcleo, Flash de 2MB
-	( https://es.aliexpress.com/item/1005006031224378.html?spm=a2g0o.order_list.order_list_main.11.2347194dbkgc9i&gatewayAdapt=glo2esp )
+	( https://es.aliexpress.com/item/1005006031224378.html )
 
  - 1 Módulo bidireccional convertidor de nivel lógico IIC I2C de 4 canales 5V a 3,3 V
-	( https://es.aliexpress.com/item/1005006068381598.html?spm=a2g0o.order_list.order_list_main.42.2347194dbkgc9i&gatewayAdapt=glo2esp )
+	( https://es.aliexpress.com/item/1005006068381598.html)
 
  - 2 JST XH2.54 terminales de 4 pines carcasa de plástico enchufe macho + conector de cable hembra XH 2,54 4P
-	( https://es.aliexpress.com/item/1005007080333485.html?spm=a2g0o.order_list.order_list_main.69.2347194dbkgc9i&gatewayAdapt=glo2esp ) 
+	( https://es.aliexpress.com/item/1005007080333485.html ) 
 
  - 2 header  1x9 pines 2,54mm ángulo recto cabezal de Pin de una sola fila macho conector de aguja de 90 grados
-	( https://es.aliexpress.com/item/1005006149080284.html?spm=a2g0o.order_list.order_list_main.68.2da9194dWU1ukM&gatewayAdapt=glo2esp )
+	( https://es.aliexpress.com/item/1005006149080284.html )
 
  - 1 header 1x3 pines 2.54mm recto PCB Macho
-	( https://es.aliexpress.com/item/1005006034877497.html?spm=a2g0o.productlist.main.2.719d258dHlgRX8&algo_pvid=34861c1d-2ba5-452a-823c-93c9b128f71e&algo_exp_id=34861c1d-2ba5-452a-823c-93c9b128f71e-1&pdp_ext_f=%7B%22order%22%3A%221352%22%2C%22eval%22%3A%221%22%7D&pdp_npi=6%40dis%21EUR%211.74%211.74%21%21%2114.14%2114.14%21%402103956a17567267705601797e1026%2112000035419985198%21sea%21ES%21135560219%21X%211%210%21n_tag%3A-29919%3Bd%3Af7046c4a%3Bm03_new_user%3A-29895&curPageLogUid=cXwpBsQYM3Qf&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005006034877497%7C_p_origin_prod%3A )
+	( https://es.aliexpress.com/item/1005006034877497.html )
 
  - 1 header 1x3 pines Female PCB hembra de una sola fila de paso de 2,54mm 
 
@@ -22,10 +22,10 @@ Lista de materiales para ps2x2pico-joysticks_CROMS_PCB
  - 1 header 1x5 pines Female PCB hembra de una sola fila de paso de 2,54mm 
 
  - 2 header 1x9 pines Female PCB hembra de una sola fila de paso de 2,54mm 
-	( https://es.aliexpress.com/item/1005001418544370.html?spm=a2g0o.productlist.main.8.2fb62286u47Her&aem_p4p_detail=2025090104020611110914590836060004531512&algo_pvid=f7d2d839-f196-492a-87f7-32ed235f19de&algo_exp_id=f7d2d839-f196-492a-87f7-32ed235f19de-7&pdp_ext_f=%7B%22order%22%3A%221037%22%2C%22eval%22%3A%221%22%7D&pdp_npi=6%40dis%21EUR%211.86%211.30%21%21%212.12%211.48%21%402103917f17567245268665900e0ee6%2112000016029074112%21sea%21ES%21135560219%21X%211%210%21n_tag%3A-29919%3Bd%3Af7046c4a%3Bm03_new_user%3A-29895&curPageLogUid=kC6g9s1MKI9s&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005001418544370%7C_p_origin_prod%3A&search_p4p_id=2025090104020611110914590836060004531512_2 )
+	( https://es.aliexpress.com/item/1005001418544370.html )
 
  - 1 Puente de paso tapa corta, cabezales y carcasas de cables derivación de 2,54 MM
-	( https://es.aliexpress.com/item/1005008796584395.html?spm=a2g0o.order_list.order_list_main.79.2347194dbkgc9i&gatewayAdapt=glo2esp )
+	( https://es.aliexpress.com/item/1005008796584395.html )
 
  - 2 Mini enchufe DIN 6 PIN macho  conector macho PS2
-	( https://es.aliexpress.com/item/1005006955862317.html?spm=a2g0o.order_list.order_list_main.64.c813194dbgvZlO&gatewayAdapt=glo2esp)
+	( https://es.aliexpress.com/item/1005006955862317.html )

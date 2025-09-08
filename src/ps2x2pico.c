@@ -249,6 +249,18 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
     return;
   }
 
+#ifdef debugLeo
+  printf("HID(%d,%d) mounted\n", dev_addr, instance);
+  printf("gamepad_descriptor = [\n");
+
+  for (int   xx=0;xx<desc_len;xx=xx+2) {
+    printf ("%02x, %02x, \n",desc_report[xx],desc_report[xx+1]);}
+  printf("]\n");
+  for (int   xx=0;xx<desc_len;xx++) {
+    printf ("0x%02x, ",desc_report[xx]);}
+  printf("\n");
+#endif
+
   hid_interface_protocol_enum_t hid_if_proto = tuh_hid_interface_protocol(dev_addr, instance);
   uint16_t vid, pid;
   tuh_vid_pid_get(dev_addr, &vid, &pid);

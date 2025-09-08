@@ -41,6 +41,9 @@
 //                                                                                                                       *
 //********************************************************************************************************************** *
 
+//#define debugLeo  // Descomentar para activar mensajes de debug por el puerto serie
+                        // Comentar para desactivar los mensajes de debug
+
 //Descomenntar lo que proceda y comomentar lo que no, una cosa o la otra
 
 #define COMPATIBLE_PCB //  pcb compatible, 3v from GPIO 13, pin 9 joy2 GPIO 1

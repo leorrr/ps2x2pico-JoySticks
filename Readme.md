@@ -11,7 +11,7 @@ Pobilidad de elegir la alimetacion del joystick entre 3 voltios y  5 voltios hac
 
 # PS2x2Pico-Joysticks
 
-**forked from  https://github.com/No0ne/ps2x2pico, https://github.com/destroyer-dcf/usb2ps2https://github.com/Ryzee119/tusb_xinput**
+**forked from  https://github.com/No0ne/ps2x2pico, https://github.com/destroyer-dcf/usb2ps2, https://github.com/Ryzee119/tusb_xinput**
 
 
 

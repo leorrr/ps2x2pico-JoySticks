@@ -172,6 +172,44 @@ bool tuh_xinput_send_report(uint8_t dev_addr, uint8_t instance, const uint8_t *t
 bool tuh_xinput_set_led(uint8_t dev_addr, uint8_t instance, uint8_t quadrant, bool block);
 
 /**
+ * @brief Set LED status on an XInput device. (Applicated to Xbox 360 controllers only)
+ *
+ * This function sets the LED status on the specified XInput device for the specified quadrant.
+ *
+ * @param dev_addr Device address of the XInput device.
+ * @param instance Instance of the XInput device.
+ * @param quadrant Quadrant of the LED to set.
+ * 
+ * LED Control
+ * Some control over the LEDs surrounding the XBox button is provided, corresponding to the markings 1, 2, 3 and 4. This is controlled using message type 0x01.
+ * To select a new pattern for the LEDs, send a message of the following form:
+ * 0103xx
+ * Where xx is the desired pattern:
+ * LED mode:
+
+ * 0x00 All off
+ * 0x01 All blinking
+ * 0x02 Led 1 flashes
+ * 0x03 Led 2 flashes
+ * 0x04 Led 3 flashes
+ * 0x05 Led 4 flashes
+ * 0x06 Led 1 on
+ * 0x07 Led 2 on
+ * 0x08 Led 3 on
+ * 0x09 Led 4 on
+ * 0x0A Rotating (e.g. 1-2-4-3)
+ * 0x0B Blinking*
+ * 0x0C Slow blinking*
+ * 0x0D Alternating (e.g. 1+4-2+3)
+
+  * The previous setting will be used for these (all blinking, or 1, 2, 3 or 4 on).
+
+ * @param block Indicates whether the operation should be blocking.
+ * @return True if LED status is set successfully, false otherwise.
+ */
+bool tuh_xinput_MYset_led(uint8_t dev_addr, uint8_t instance, uint8_t quadrant, bool block);
+
+/**
  * @brief Set rumble values on an XInput device.
  *
  * This function sets the rumble values on the specified XInput device for left and right motors.

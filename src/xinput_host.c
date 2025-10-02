@@ -202,6 +202,50 @@ bool tuh_xinput_set_led(uint8_t dev_addr, uint8_t instance, uint8_t quadrant, bo
     return ret;
 }
 
+// Leo
+bool tuh_xinput_MYset_led(uint8_t dev_addr, uint8_t instance, uint8_t quadrant, bool block)
+{   if (quadrant>=0 && quadrant<=0x0d){
+    xinputh_interface_t *xid_itf = get_instance(dev_addr, instance);
+    uint8_t txbuf[32];
+    uint16_t len;
+    switch (xid_itf->type)
+    {
+    case XBOX360_WIRELESS:
+        memcpy(txbuf, xbox360w_led, sizeof(xbox360w_led));
+        //txbuf[3] = (quadrant == 0) ? 0x40 : (0x40 | (quadrant + 5));
+
+        if (quadrant == 0)
+        {
+            txbuf[3] = 0x40;
+        }
+        else
+        {
+            txbuf[3] = (0x40 | quadrant);
+        }
+
+        len = sizeof(xbox360w_led);
+        break;
+
+    case XBOX360_WIRED:
+        memcpy(txbuf, xbox360_wired_led, sizeof(xbox360_wired_led));
+        //txbuf[2] = (quadrant == 0) ? 0 : (quadrant + 5); 
+        txbuf[2] = quadrant;
+        len = sizeof(xbox360_wired_led);
+        break;
+    default:
+        return true;
+    }
+    bool ret = tuh_xinput_send_report(dev_addr, instance, txbuf, len);
+    if (block && ret)
+    {
+        wait_for_tx_complete(dev_addr, xid_itf->ep_out);
+    }
+    return ret;}
+    else return false;
+    
+}
+// /LEO
+
 bool tuh_xinput_set_rumble(uint8_t dev_addr, uint8_t instance, uint8_t lValue, uint8_t rValue, bool block)
 {
     xinputh_interface_t *xid_itf = get_instance(dev_addr, instance);

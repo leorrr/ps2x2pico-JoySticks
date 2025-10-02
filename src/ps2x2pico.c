@@ -210,9 +210,30 @@ void tuh_xinput_mount_cb(uint8_t dev_addr, uint8_t instance, const xinputh_inter
         tuh_xinput_receive_report(dev_addr, instance);
         return;
     }
-    tuh_xinput_set_led(dev_addr, instance, 0, true);
-    tuh_xinput_set_led(dev_addr, instance, 1, true);
-    tuh_xinput_set_rumble(dev_addr, instance, 0, 0, true);
+     /*
+CONTROL DE LEDS EN MANDOS XBOX360
+
+0x00  Todo apagado
+0x01  Todo parpadeando 
+0x02  LED 1 destello  parpadea led 1 y despues queda encendido
+0x03  LED 2 destello  parpadea led 2 y despues queda encendido
+0x04  LED 3 destello  parpapadea led 3 y despues queda encendido
+0x05  LED 4 destello  parpapadea led 4 y despues queda encendido
+0x06  LED 1 encendido 
+0x07  LED 2 encendido 
+0x08  LED 3 encendido 
+0x09  LED 4 encendido 
+0x0A  Rotación (por ejemplo, 1-2-4-3) 
+0x0B  Parpadeo* rápido 
+0x0C  Parpadeo lento* 
+0x0D  Alternando (por ejemplo, 1+4-2+3)  */
+
+
+    tuh_xinput_MYset_led(dev_addr, instance, 0, true); //apagamos todos los leds
+
+    tuh_xinput_MYset_led(dev_addr, instance, 0x02, true); //parpadea led 1 y despues queda encendido
+   
+    tuh_xinput_set_rumble(dev_addr, instance, 0, 0, true); // sin vibracion
     tuh_xinput_receive_report(dev_addr, instance);
 }
 

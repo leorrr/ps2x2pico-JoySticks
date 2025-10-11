@@ -94,9 +94,18 @@ u8 gamepadADDR1= 0;
 u8 gamepadINST1=0;
 u8 gamepadADDR2= 0;
 u8 gamepadINST2=0;
-int reportSum=269;
+u8 x360padADDR1=0;
+u8 x360padINST1=0;
+u8 x360padADDR2=0;
+u8 x360padINST2=0;
+//Leo
+//int reportSum=269;
+bool globalJoy1=0; //con esta variables controlamos que no haya mas de 2 gamepads conectados, indistintamente el tipo usb o 360
+bool globalJoy2=0;
 
-//Esta funciona establiza las lecturas analogicas en los gamepad viejos, que ya no son  tan precisos, como cuando eran nuevos
+//Leo
+
+//Esta funciona estabiliza las lecturas analogicas en los gamepad viejos, que ya no son  tan precisos, como cuando eran nuevos
 #define ruido 8000
 int16_t removeNoise (int16_t valor) {
   if (valor > -ruido && valor < ruido) {return 0; }// dentro de la zona muerta → 0  
@@ -192,14 +201,36 @@ unsigned long currentMillisXinput=myMillis; // Guardamos el tiempo actual
 if (currentMillisXinput-last_millisXinput>xinput_Periodo)
 {
 last_millisXinput=myMillis;
-   if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS){ x360Process1(gamepad360_report);}
+   if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS){ 
+    if(x360padADDR1 == dev_addr && x360padINST1 == instance) {x360Process1(gamepad360_report); 
+      #ifdef debugLeo
+        printf(" Received Reportx360Joy1\n");
+      #endif
+   // tuh_xinput_receive_report(dev_addr, instance);
+      //tuh_xinput_receive_report(x360padADDR1, x360padINST1);
+    //return;
+    }
+     
+  if(x360padADDR2 == dev_addr && x360padINST2 == instance) {x360Process2(gamepad360_report);
+      #ifdef debugLeo
+        printf(" Received Reportx360Joy2\n");
+      #endif
+     // tuh_xinput_receive_report(dev_addr, instance);
+      //tuh_xinput_receive_report(x360padADDR2, x360padINST2);
+      //return;
+      }
     }
   
     // le indicamos al sistema que ya estamos preparados para recibir otro paquete
     //tuh_xinput_receive_report(dev_addr, instance);
 }
+#ifdef debugLeo
+        printf("mandame otro report\n");
+#endif
 tuh_xinput_receive_report(dev_addr, instance);
 }
+}
+
 void tuh_xinput_mount_cb(uint8_t dev_addr, uint8_t instance, const xinputh_interface_t *xinput_itf)
 {
     printf("XINPUT MOUNTED %02x %d\n", dev_addr, instance);
@@ -228,6 +259,7 @@ CONTROL DE LEDS EN MANDOS XBOX360
 0x0C  Parpadeo lento* 
 0x0D  Alternando (por ejemplo, 1+4-2+3)  */
 
+if (globalJoy1==0) {x360padADDR1=dev_addr; x360padINST1=instance; globalJoy1=1;
 
     tuh_xinput_MYset_led(dev_addr, instance, 0, true); //apagamos todos los leds
 
@@ -235,11 +267,46 @@ CONTROL DE LEDS EN MANDOS XBOX360
    
     tuh_xinput_set_rumble(dev_addr, instance, 0, 0, true); // sin vibracion
     tuh_xinput_receive_report(dev_addr, instance);
+  #ifdef debugLeo
+    printf(" x360Joy1 XINPUT MOUNTED %02x %d\n", dev_addr, instance);
+  #endif
+  }
+else if (globalJoy2==0) {x360padADDR2=dev_addr; x360padINST2=instance; globalJoy2=1;
+
+    tuh_xinput_MYset_led(dev_addr, instance, 0, true); //apagamos todos los leds
+
+    tuh_xinput_MYset_led(dev_addr, instance, 0x03, true); //parpadea led 2 y despues queda encendido
+   
+    tuh_xinput_set_rumble(dev_addr, instance, 0, 0, true); // sin vibracion
+    tuh_xinput_receive_report(dev_addr, instance);
+  #ifdef debugLeo
+    printf(" x360Joy2 XINPUT MOUNTED %02x %d\n", dev_addr, instance);
+  #endif
+}
+
+    verde; //encendemos el led cuando conectamos un dispositivo x360
 }
 
 void tuh_xinput_umount_cb(uint8_t dev_addr, uint8_t instance)
 {
+    negro; //apagamos el led cuando desconectamos un dispositivo usb  
     printf("XINPUT UNMOUNTED %02x %d\n", dev_addr, instance);
+    if (dev_addr == x360padADDR1 && instance == x360padINST1) {
+        x360padADDR1 = 0;
+        x360padINST1 = 0;
+        globalJoy1 = 0;
+      #ifdef debugLeo
+        printf(" x360Joy1 XINPUT UNMOUNTED %02x %d\n", dev_addr, instance);
+      #endif
+    }
+    if (dev_addr == x360padADDR2 && instance == x360padINST2) {
+        x360padADDR2 = 0;
+        x360padINST2 = 0;
+        globalJoy2 = 0;
+        #ifdef debugLeo
+          printf(" x360Joy2 XINPUT UNMOUNTED %02x %d\n", dev_addr, instance);
+        #endif
+    } 
 }
 
 //ximput_host__________________________________________
@@ -341,9 +408,12 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
       //leo
       if (hid_if_proto == HID_ITF_PROTOCOL_NONE) {
         // Guardamos la direcciones de los gamepad a medida que los conectamos
-        // solo se guardan 2 gamepads el resto los ignoramos el spectrum solo tenioa 2 joysticks
-        if (gamepadADDR1==0 && gamepadINST1==0){gamepadADDR1 = dev_addr; gamepadINST1= instance;}
-        else if (gamepadADDR2==0 && gamepadINST2==0){gamepadADDR2= dev_addr; gamepadINST2= instance;}
+        // solo se guardan 2 gamepads el resto los ignoramos el spectrum solo tenia 2 joysticks
+        /*if (gamepadADDR1==0 && gamepadINST1==0 && joy1==0){gamepadADDR1 = dev_addr; gamepadINST1= instance; joy1=1;}
+        else if (gamepadADDR2==0 && gamepadINST2==0 && globalJoy2==0){gamepadADDR2= dev_addr; gamepadINST2= instance; globalJoy2=1;}*/
+
+        if (globalJoy1==0){gamepadADDR1 = dev_addr; gamepadINST1= instance; globalJoy1=1;}
+        else if (globalJoy2==0){gamepadADDR2= dev_addr; gamepadINST2= instance; globalJoy2=1;}
     }
     //leo
       azul; //encendemos el led cuando conectamos un dispositivo usb
@@ -358,6 +428,25 @@ void tuh_hid_umount_cb(u8 dev_addr, u8 instance) {
     kb_addr = 0;
     kb_inst = 0;
   }
+  //leo
+  if (dev_addr == gamepadADDR1 && instance == gamepadINST1) {
+    gamepadADDR1 = 0;
+    gamepadINST1 = 0;
+    globalJoy1 = 0;
+    #ifdef debugleo
+    printf("gamepad 1 disconnected\n");
+    #endif
+  }
+  if (dev_addr == gamepadADDR2 && instance == gamepadINST2) {
+    gamepadADDR2 = 0;
+    gamepadINST2 = 0;
+    globalJoy2 = 0;
+    #ifdef debugleo
+    printf("gamepad 2 disconnected\n");
+    #endif  
+  }
+  //leo
+
   //tuh_deinit(TUH_OPT_RHPORT);
   //printf("deinit(%d)\n", TUH_OPT_RHPORT);
   //tusb_init();
@@ -454,7 +543,7 @@ board_init();
 
 printf ("Iniciando sistema...Waiting for USB devices...\n");
 
-sleep_ms(2000); // esperamos dos segundos a que se estabilice la alimentacion
+sleep_ms(2000); // esperamos dos segundos a que se estabilice la alimentacion ?....
 
 #ifdef COMPATIBLE_PCB
 char *pcbversion="Compatible_PCB para usar con el proyecto de NoOne y destroyer, y la PCB1 de leorrr";

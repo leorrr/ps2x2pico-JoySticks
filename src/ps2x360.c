@@ -87,7 +87,7 @@ x360PadState x360Pad2={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //ini
 uint8_t myx360Mouse[3]={0}; //inicializamos la estrucutura con el valores por defecto
 
 
-void readx360pad1(x360PadState *state,int16_t const* report)
+void readx360Pad1(x360PadState *state,int16_t const* report)
 {
        uint16_t btn = report[0];
        state->d_up =(btn & XINPUT_GAMEPAD_DPAD_UP)?1:0; //esto se llama operador ternario
@@ -225,7 +225,7 @@ void x360Process1(int16_t myreport[])
         if (report[6] > DEADZONE)      printf("Stick Der ↑\n");
         else if (report[6] < -DEADZONE) printf("Stick Der ↓\n"); */
 //printf("report0(Buttons): %04x, report1(BLT): %02x, report2(BRT): %02x, report3(LX): %d, report4(LY): %d, report5(RX): %d report6(RY): %d \n",myreport[0],myreport[1],myreport[2],myreport[3],myreport[4],myreport[5],myreport[6]);
-       readx360pad1(&x360Pad1,myreport);
+       readx360Pad1(&x360Pad1,myreport);
 
 //arriba
 
@@ -245,7 +245,6 @@ else if (x360Pad1.d_down==0 && x360Pad1.lastd_down==1){Esp_code_send(ESP_JOY1DOW
 if (x360Pad1.d_down==1 && x360Pad1.lastd_down==0){Esp_code_send(ESP_JOY1DOWN,1);x360Pad1.lastd_down=1;}//Lo acabamos de pulsar
 
 //abajo LS
-
 if (x360Pad1.ls_down==1 && x360Pad1.lastls_down==1){Esp_code_send(ESP_JOY1DOWN,1);} //si esta pulsado
 else if (x360Pad1.ls_down==0 && x360Pad1.lastls_down==1){Esp_code_send(ESP_JOY1DOWN,0);x360Pad1.lastls_down=0;}//si hemos soltado
 if (x360Pad1.ls_down==1 && x360Pad1.lastls_down==0){Esp_code_send(ESP_JOY1DOWN,1);x360Pad1.lastls_down=1;}//Lo acabamos de pulsar
@@ -256,8 +255,7 @@ if (x360Pad1.d_left==1 && x360Pad1.lastd_left==1){Esp_code_send(ESP_JOY1LEFT,1);
 else if (x360Pad1.d_left==0 && x360Pad1.lastd_left==1){Esp_code_send(ESP_JOY1LEFT,0);x360Pad1.lastd_left=0;}//si hemos soltado
 if (x360Pad1.d_left==1 && x360Pad1.lastd_left==0){Esp_code_send(ESP_JOY1LEFT,1);x360Pad1.lastd_left=1;}//Lo acabamos de pulsar
 
- //Izquierda LS
-
+//Izquierda LS
 if (x360Pad1.ls_left==1 && x360Pad1.lastls_left==1){Esp_code_send(ESP_JOY1LEFT,1);} //si esta pulsado
 else if (x360Pad1.ls_left==0 && x360Pad1.lastls_left==1){Esp_code_send(ESP_JOY1LEFT,0);x360Pad1.lastls_left=0;}//si hemos soltado
 if (x360Pad1.ls_left==1 && x360Pad1.lastls_left==0){Esp_code_send(ESP_JOY1LEFT,1);x360Pad1.lastls_left=1;}//Lo acabamos de pulsar
@@ -268,7 +266,6 @@ else if (x360Pad1.d_right==0 && x360Pad1.lastd_right==1){Esp_code_send(ESP_JOY1R
 if (x360Pad1.d_right==1 && x360Pad1.lastd_right==0){Esp_code_send(ESP_JOY1RIGHT,1);x360Pad1.lastd_right=1;}//Lo acabamos de pulsar
 
 //Derecha LS
-
 if (x360Pad1.ls_right==1 && x360Pad1.lastls_right==1){Esp_code_send(ESP_JOY1RIGHT,1);} //si esta pulsado
 else if (x360Pad1.ls_right==0 && x360Pad1.lastls_right==1){Esp_code_send(ESP_JOY1RIGHT,0);x360Pad1.lastls_right=0;}//si hemos soltado
 if (x360Pad1.ls_right==1 && x360Pad1.lastls_right==0){Esp_code_send(ESP_JOY1RIGHT,1);x360Pad1.lastls_right=1;}//Lo acabamos de pulsar
@@ -332,10 +329,10 @@ if (x360Pad1.rs_down==1){myx360Mouse[2]=0;}
 void x360Process2(int16_t myreport[])
 
  { 
-       return;
+      // return;
 
-/*
-          readx360pad2(&x360Pad2,myreport);
+//        readx360Pad2
+          readx360Pad2(&x360Pad2,myreport);
      
 
 
@@ -345,20 +342,43 @@ if (x360Pad2.d_up==1 && x360Pad2.lastd_up==1){Esp_code_send(ESP_JOY2UP,1);} //si
 else if (x360Pad2.d_up==0 && x360Pad2.lastd_up==1){Esp_code_send(ESP_JOY2UP,0);x360Pad2.lastd_up=0;}//si hemos soltado
 if (x360Pad2.d_up==1 && x360Pad2.lastd_up==0){Esp_code_send(ESP_JOY2UP,1);x360Pad2.lastd_up=1;}//Lo acabamos de pulsar
 
-       //Abajo
+//arriba LS
+if (x360Pad2.ls_up==1 && x360Pad2.lastls_up==1){Esp_code_send(ESP_JOY2UP,1);} //si esta pulsado
+else if (x360Pad2.ls_up==0 && x360Pad2.lastls_up==1){Esp_code_send(ESP_JOY2UP,0);x360Pad2.lastls_up=0;}//si hemos soltado
+if (x360Pad2.ls_up==1 && x360Pad2.lastls_up==0){Esp_code_send(ESP_JOY2UP,1);x360Pad2.lastls_up=1;}//Lo acabamos de pulsar
+
+ //Abajo
 if (x360Pad2.d_down==1 && x360Pad2.lastd_down==1){Esp_code_send(ESP_JOY2DOWN,1);} //si esta pulsado
 else if (x360Pad2.d_down==0 && x360Pad2.lastd_down==1){Esp_code_send(ESP_JOY2DOWN,0);x360Pad2.lastd_down=0;}//si hemos soltado
 if (x360Pad2.d_down==1 && x360Pad2.lastd_down==0){Esp_code_send(ESP_JOY2DOWN,1);x360Pad2.lastd_down=1;}//Lo acabamos de pulsar
+
+//abajo LS
+if (x360Pad2.ls_down==1 && x360Pad2.lastls_down==1){Esp_code_send(ESP_JOY2DOWN,1);} //si esta pulsado
+else if (x360Pad2.ls_down==0 && x360Pad2.lastls_down==1){Esp_code_send(ESP_JOY2DOWN,0);x360Pad2.lastls_down=0;}//si hemos soltado
+if (x360Pad2.ls_down==1 && x360Pad2.lastls_down==0){Esp_code_send(ESP_JOY2DOWN,1);x360Pad2.lastls_down=1;}//Lo acabamos de pulsar
+
 
 //izquierda
 if (x360Pad2.d_left==1 && x360Pad2.lastd_left==1){Esp_code_send(ESP_JOY2LEFT,1);} //si esta pulsado
 else if (x360Pad2.d_left==0 && x360Pad2.lastd_left==1){Esp_code_send(ESP_JOY2LEFT,0);x360Pad2.lastd_left=0;}//si hemos soltado
 if (x360Pad2.d_left==1 && x360Pad2.lastd_left==0){Esp_code_send(ESP_JOY2LEFT,1);x360Pad2.lastd_left=1;}//Lo acabamos de pulsar
 
+//Izquierda LS
+if (x360Pad2.ls_left==1 && x360Pad2.lastls_left==1){Esp_code_send(ESP_JOY2LEFT,1);} //si esta pulsado
+else if (x360Pad2.ls_left==0 && x360Pad2.lastls_left==1){Esp_code_send(ESP_JOY2LEFT,0);x360Pad2.lastls_left=0;}//si hemos soltado
+if (x360Pad2.ls_left==1 && x360Pad2.lastls_left==0){Esp_code_send(ESP_JOY2LEFT,1);x360Pad2.lastls_left=1;}//Lo acabamos de pulsar
+
 //derecha
 if (x360Pad2.d_right==1 && x360Pad2.lastd_right==1){Esp_code_send(ESP_JOY2RIGHT,1);} //si esta pulsado
 else if (x360Pad2.d_right==0 && x360Pad2.lastd_right==1){Esp_code_send(ESP_JOY2RIGHT,0);x360Pad2.lastd_right=0;}//si hemos soltado
 if (x360Pad2.d_right==1 && x360Pad2.lastd_right==0){Esp_code_send(ESP_JOY2RIGHT,1);x360Pad2.lastd_right=1;}//Lo acabamos de pulsar
+
+
+//Derecha LS
+if (x360Pad2.ls_right==1 && x360Pad2.lastls_right==1){Esp_code_send(ESP_JOY2RIGHT,1);} //si esta pulsado
+else if (x360Pad2.ls_right==0 && x360Pad2.lastls_right==1){Esp_code_send(ESP_JOY2RIGHT,0);x360Pad2.lastls_right=0;}//si hemos soltado
+if (x360Pad2.ls_right==1 && x360Pad2.lastls_right==0){Esp_code_send(ESP_JOY2RIGHT,1);x360Pad2.lastls_right=1;}//Lo acabamos de pulsar
+
 
 //Boton A
 if (x360Pad2.buttonA==1 && x360Pad2.lastbuttonA==1){Esp_code_send(ESP_JOY2A,1);} //si esta pulsado
@@ -392,14 +412,15 @@ if (x360Pad2.start==1 && x360Pad2.laststart==1){Esp_code_send(ESP_JOY2START,1);}
 else if (x360Pad2.start==0 && x360Pad2.laststart==1){Esp_code_send(ESP_JOY2START,0);x360Pad2.laststart=0;}//si hemos soltado
 if (x360Pad2.start==1 && x360Pad2.laststart==0){Esp_code_send(ESP_JOY2START,1);x360Pad2.laststart=1;}//Lo acabamos de pulsar
 
-//LTrigger
-if (x360Pad2.Ltrigger==1 && x360Pad2.lastLtrigger==1){Esp_code_send(ESP_JOY2C,1);} //si esta pulsado
-else if (x360Pad2.Ltrigger==0 && x360Pad2.lastLtrigger==1){Esp_code_send(ESP_JOY2C,0);x360Pad2.lastLtrigger=0;}//si hemos soltado
-if (x360Pad2.Ltrigger==1 && x360Pad2.lastLtrigger==0){Esp_code_send(ESP_JOY2C,1);x360Pad2.lastLtrigger=1;}//Lo acabamos de pulsar
+//LShoulder
+if (x360Pad2.Lshoulder==1 && x360Pad2.lastLshoulder==1){Esp_code_send(ESP_JOY2C,1);} //si esta pulsado
+else if (x360Pad2.Lshoulder==0 && x360Pad2.lastLshoulder==1){Esp_code_send(ESP_JOY2C,0);x360Pad2.lastLshoulder=0;}//si hemos soltado
+if (x360Pad2.Lshoulder==1 && x360Pad2.lastLshoulder==0){Esp_code_send(ESP_JOY2C,1);x360Pad2.lastLshoulder=1;}//Lo acabamos de pulsar
 
-//RTrigger
-if (x360Pad2.Rtrigger==1 && x360Pad2.lastRtrigger==1){Esp_code_send(ESP_JOY2Z,1);} //si esta pulsado
-else if (x360Pad2.Rtrigger==0 && x360Pad2.lastRtrigger==1){Esp_code_send(ESP_JOY2Z,0);x360Pad2.lastRtrigger=0;}//si hemos soltado
-if (x360Pad2.Rtrigger==1 && x360Pad2.lastRtrigger==0){Esp_code_send(ESP_JOY2Z,1);x360Pad2.lastRtrigger=1;}//Lo acabamos de pulsar
-*/
+//RShoulder
+if (x360Pad2.Rshoulder==1 && x360Pad2.lastRshoulder==1){Esp_code_send(ESP_JOY2Z,1);} //si esta pulsado
+else if (x360Pad2.Rshoulder==0 && x360Pad2.lastRshoulder==1){Esp_code_send(ESP_JOY2Z,0);x360Pad2.lastRshoulder=0;}//si hemos soltado
+if (x360Pad2.Rshoulder==1 && x360Pad2.lastRshoulder==0){Esp_code_send(ESP_JOY2Z,1);x360Pad2.lastRshoulder=1;}//Lo acabamos de pulsar
+
+
 }

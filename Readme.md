@@ -26,26 +26,26 @@ He diseñado una placa nueva inspirada en la placa con Rp2040 Zero del usuario *
 
 Cuando la vi pense que lastima no aprovechar los pines que sobran.... y este es el resultado esta en fase beta, pero en principio es funcional,  el soporte para gamepad usb, Gamepad1 xBox con enmulacion de ratón en stick analogico derecho y botones en los gatillos y los 2 puertos DB9 norma Atari es operativo mapeado con los Ps2 Key ESpecial codes para usar con emulador.ESPectrum, en resumen:
 
- - Gamepad1 USB se corresponde al joystick 1 en emulador ESPectrum.
- - Gamepad2 USB se corresponde al joystick 2 en emulador ESPectrum.
- - Gamepad1 xBox se corresponde al joystick 1 en emulador ESPectrum.
+ - Gamepad 1 USB se corresponde al joystick 1 en emulador ESPectrum.
+ - Gamepad 2 USB se corresponde al joystick 2 en emulador ESPectrum.
+ - Gamepad 1 xbox 360 se corresponde al joystick 1 en emulador ESPectrum.
+ - Gamepad 2 xbox 360 se corresponde al joystick 2 en emulador ESPectrum.
  - El DB9 1 al joystick 1 en emulador ESPectrum.
- - El DB92 al joystick 2 en emulador ESPectrum.
+ - El DB9 2 al joystick 2 en emulador ESPectrum.
 
 Pendiente dar soporte para gamepad de sega de tres y seis botones al igual que el proyecto de  **David Carrion** (  **https://github.com/dacarsoft/DB9_2_Keyboard** ) o el fork del mismo de **Antonio Taimaron**, PowaJoy ( **https://github.com/hash6iron/PowaJoy**),
 
 Añadido soporte para GamePad USB imitacion  Nintendo Snes
 ![GamePad](./images/SnesUsbControler.jpg)
 
-Añadido soporte para GamePad USB con cable compatible Xbox, solo cruceta y botones
+Añadido soporte para GamePad USB con cable compatible Xbox, direccion con cruceta y stick izquierdo, botones y emulacion ratón en stick derecho y botones de ratón en gatillos (triggers)
 ![x360](./images/mandoXbox360.jpg)
-
-Pendiente dar soporte a sticks analogicos en mando Xbox, y soporte a segundo mando, para juegos de 2 jugadores
 
 
 ### **Mapeando los botones con los especial ps2 Keycodes para su uso en emulador ESPectrum**
 
-Es necesario el uso de un HUB USB para poder tener conectados todos los dispositivos a la vez, he probado varios, no todos funcionan, el que mejor resultado me dado es siguiente ![HUB_USB](./images/HUB_USB·.0TypeC.JPG), que pude ser encontrado en el siguiente link https://es.aliexpress.com/item/1005007512518100.html?srcSns=sns_Telegram&spreadType=socialShare&bizType=ProductDetail&social_params=61017559658&aff_fcid=0e625e375f134f83a835d0010177047f-1741529235758-02796-_EweRPKs&tt=MG&aff_fsk=_EweRPKs&aff_platform=default&sk=_EweRPKs&aff_trace_key=0e625e375f134f83a835d0010177047f-1741529235758-02796-_EweRPKs&shareId=61017559658&businessType=ProductDetail&platform=AE&terminal_id=60930d633abd4d279204fca963580e98&afSmartRedirect=y 
+Es necesario el uso de un HUB USB para poder tener conectados todos los dispositivos a la vez, he probado varios, no todos funcionan, el que mejor resultado me dado es siguiente ![HUB_USB](./images/HUB_USB·.0TypeC.JPG), que pude ser encontrado en el siguiente
+ link https://es.aliexpress.com/item/1005007512518100.html?srcSns=sns_Telegram&spreadType=socialShare&bizType=ProductDetail&social_params=61017559658&aff_fcid=0e625e375f134f83a835d0010177047f-1741529235758-02796-_EweRPKs&tt=MG&aff_fsk=_EweRPKs&aff_platform=default&sk=_EweRPKs&aff_trace_key=0e625e375f134f83a835d0010177047f-1741529235758-02796-_EweRPKs&shareId=61017559658&businessType=ProductDetail&platform=AE&terminal_id=60930d633abd4d279204fca963580e98&afSmartRedirect=y 
 
 ### Importante asegurarse de comprar el TYPE-C, que puede ser conectado directamente al RP2040-Zero
 

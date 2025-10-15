@@ -99,7 +99,6 @@ u8 x360padINST1=0;
 u8 x360padADDR2=0;
 u8 x360padINST2=0;
 //Leo
-//int reportSum=269;
 bool globalJoy1=0; //con esta variables controlamos que no haya mas de 2 gamepads conectados, indistintamente el tipo usb o 360
 bool globalJoy2=0;
 
@@ -154,7 +153,12 @@ usbh_class_driver_t const* usbh_app_driver_get_cb(uint8_t* driver_count){
 
 void tuh_xinput_report_received_cb(uint8_t dev_addr, uint8_t instance, xinputh_interface_t const* xid_itf, uint16_t len)
 {
-    const xinput_gamepad_t *p = &xid_itf->pad;
+
+  
+  
+
+   
+const xinput_gamepad_t *p = &xid_itf->pad;
     //uint32_t report360[]={p->wButtons,p->bLeftTrigger,p->bRightTrigger,p->sThumbLX,p->sThumbLY,p->sThumbRX,p->sThumbRY};
 
     const char* type_str;
@@ -185,51 +189,68 @@ void tuh_xinput_report_received_cb(uint8_t dev_addr, uint8_t instance, xinputh_i
 
         // procesamos los sticks como mouse para el movimiento
         process_stick_as_mouse(gamepad360_report[5], gamepad360_report[6]);
-        if (gamepad360_report[1]>10){mousebl=1;}else{mousebl=0;}
-        if (gamepad360_report[2]>10){mousebr=2;}else{mousebr=0;}
+         if (gamepad360_report[1]>10){mousebl=1;}else{mousebl=0;}
+         if (gamepad360_report[2]>10){mousebr=2;}else{mousebr=0;}
         //procesamos los botones del mouse
-        gameMouseStick_report[0]=(mousebl+mousebr);
+         gameMouseStick_report[0]=(mousebl+mousebr);
 
         //printf("gameMouseStick_report: %d %d %d\n", gameMouseStick_report[0], gameMouseStick_report[1], gameMouseStick_report[2]);
-        ms_usb_receive(gameMouseStick_report); //se lo enviamos al ps2 a traves de esta funcion
-        gameMouseStick_report[0]=0; gameMouseStick_report[1]=0;gameMouseStick_report[2]=0; //reseteamos report del mouse a 0
-
+         ms_usb_receive(gameMouseStick_report); //se lo enviamos al ps2 a traves de esta funcion
+         gameMouseStick_report[0]=0; gameMouseStick_report[1]=0;gameMouseStick_report[2]=0; //reseteamos report del mouse a 0
+/*
+int sumReport=gamepad360_report[0]+gamepad360_report[1]+gamepad360_report[2]+gamepad360_report[3]+gamepad360_report[4];//+gamepad360_report[5]+gamepad360_report[6];
+#ifdef debugLeo
+  printf ("xid_itf->last_xfer_result: %d \n",xid_itf->last_xfer_result);
+  printf ("xfer_result_success: %d \n",XFER_RESULT_SUCCESS);
+  printf("sumReport: %d \n",sumReport); 
+#endif  */
 
 // procesamos el resto de valores del report, solo si ha pasado el periodo establecido
 unsigned long currentMillisXinput=myMillis; // Guardamos el tiempo actual
 
 if (currentMillisXinput-last_millisXinput>xinput_Periodo)
-{
-last_millisXinput=myMillis;
-   if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS){ 
+{last_millisXinput=myMillis;
+
+
+//if (currentMillisXinput-last_millisXinput>xinput_Periodo){last_millisXinput=myMillis;
+  //ha pasado el periodo establecido, procesamos
+  //printf("xid_itf->last_xfer_result: %d \n",xid_itf->last_xfer_result);
+  //printf("sumReport: %d \n",sumReport); 
+  //if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS && sumReport !=0){ 
+  // para evitar problemas si se conecta un mando y no se desconecta correctamente
+  // solo procesamos si la ultima transferencia ha sido correcta y el report no es todo 0
+  //comentario generado por copilot
+
+if (xid_itf->last_xfer_result == XFER_RESULT_SUCCESS ){ 
     if(x360padADDR1 == dev_addr && x360padINST1 == instance) {x360Process1(gamepad360_report); 
+    
       #ifdef debugLeo
         printf(" Received Reportx360Joy1\n");
+        printf("report joy1: %d %d %d %d %d %d %d \n", gamepad360_report[0], gamepad360_report[1], gamepad360_report[2],gamepad360_report[3], gamepad360_report[4], gamepad360_report[5], gamepad360_report[6]);
       #endif
-   // tuh_xinput_receive_report(dev_addr, instance);
+    //tuh_xinput_receive_report(dev_addr, instance);
       //tuh_xinput_receive_report(x360padADDR1, x360padINST1);
     //return;
     }
      
   if(x360padADDR2 == dev_addr && x360padINST2 == instance) {x360Process2(gamepad360_report);
+    
       #ifdef debugLeo
-        printf(" Received Reportx360Joy2\n");
-      #endif
-     // tuh_xinput_receive_report(dev_addr, instance);
+        printf(" Received Reportx360Joy2\n");    
+        printf("report joy2: %d %d %d %d %d %d %d \n", gamepad360_report[0], gamepad360_report[1], gamepad360_report[2],gamepad360_report[3], gamepad360_report[4], gamepad360_report[5], gamepad360_report[6]);
+      #endif 
+      //tuh_xinput_receive_report(dev_addr, instance);
       //tuh_xinput_receive_report(x360padADDR2, x360padINST2);
       //return;
       }
     }
-  
-    // le indicamos al sistema que ya estamos preparados para recibir otro paquete
-    //tuh_xinput_receive_report(dev_addr, instance);
 }
 #ifdef debugLeo
         printf("mandame otro report\n");
 #endif
-tuh_xinput_receive_report(dev_addr, instance);
+tuh_xinput_receive_report(dev_addr, instance);}
 }
-}
+
 
 void tuh_xinput_mount_cb(uint8_t dev_addr, uint8_t instance, const xinputh_interface_t *xinput_itf)
 {
@@ -336,7 +357,7 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
     printf("WARNING: HID(%d,%d) skipped!\n",dev_addr, instance);
     return;
   }
-
+//prueba para leer hid descriptor y poder procesarlo en elfuturo
 #ifdef debugLeo
   printf("HID(%d,%d) mounted\n", dev_addr, instance);
   printf("gamepad_descriptor = [\n");
@@ -412,8 +433,19 @@ void tuh_hid_mount_cb(u8 dev_addr, u8 instance, u8 const* desc_report, u16 desc_
         /*if (gamepadADDR1==0 && gamepadINST1==0 && joy1==0){gamepadADDR1 = dev_addr; gamepadINST1= instance; joy1=1;}
         else if (gamepadADDR2==0 && gamepadINST2==0 && globalJoy2==0){gamepadADDR2= dev_addr; gamepadINST2= instance; globalJoy2=1;}*/
 
-        if (globalJoy1==0){gamepadADDR1 = dev_addr; gamepadINST1= instance; globalJoy1=1;}
-        else if (globalJoy2==0){gamepadADDR2= dev_addr; gamepadINST2= instance; globalJoy2=1;}
+        if (globalJoy1==0){gamepadADDR1 = dev_addr; gamepadINST1= instance; globalJoy1=1;
+        
+        #ifdef debugLeo
+          printf("gamepad 1 connected\n");
+        #endif
+      }
+
+        else if (globalJoy2==0){gamepadADDR2= dev_addr; gamepadINST2= instance; globalJoy2=1;
+        
+        #ifdef debugLeo
+          printf("gamepad 2 connected\n");
+        #endif
+      }
     }
     //leo
       azul; //encendemos el led cuando conectamos un dispositivo usb
@@ -433,24 +465,20 @@ void tuh_hid_umount_cb(u8 dev_addr, u8 instance) {
     gamepadADDR1 = 0;
     gamepadINST1 = 0;
     globalJoy1 = 0;
-    #ifdef debugleo
-    printf("gamepad 1 disconnected\n");
+    
+    #ifdef debugLeo
+     printf("gamepad 1 disconnected\n");
     #endif
   }
   if (dev_addr == gamepadADDR2 && instance == gamepadINST2) {
     gamepadADDR2 = 0;
     gamepadINST2 = 0;
     globalJoy2 = 0;
-    #ifdef debugleo
-    printf("gamepad 2 disconnected\n");
+    
+    #ifdef debugLeo
+     printf("gamepad 2 disconnected\n");
     #endif  
-  }
-  //leo
-
-  //tuh_deinit(TUH_OPT_RHPORT);
-  //printf("deinit(%d)\n", TUH_OPT_RHPORT);
-  //tusb_init();
-  //printf("init()\n");
+  } 
 }
 
 void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 len) {
@@ -504,19 +532,7 @@ void tuh_hid_report_received_cb(u8 dev_addr, u8 instance, u8 const* report, u16 
       printf("HID_MS(%d,%d)\n", dev_addr, instance);
       #endif
       #endif
-//leo
-/*
-    if(dev_addr==gamepadADDR1 && instance==gamepadINST1) {gamePad1_usb_receive(report);}
-    if(dev_addr==gamepadADDR2 && instance==gamepadINST2) {gamePad2_usb_receive(report);}*/
-    
-/*
-//int reportSum = report[3]+report[4]+ report[5]+ report[6];
-//printf ("reportSum= %d",reportSum);
-if(dev_addr==gamepadADDR1 && instance==gamepadINST1 ) {gamePad1_usb_receive(report);}//reportSum=269;}
-//if(dev_addr==gamepadADDR1 && instance==gamepadINST1 && (report[3]!=127 && report[4]!=127 && report[5]!=15 && report[6]!=0)) {printf("report3: %d, report4; %d,report5: %d,report6:%d",report[3],report[4],report[5], report[6]);gamePad1_usb_receive(report);}
-if(dev_addr==gamepadADDR2 && instance==gamepadINST2 ) {gamePad2_usb_receive(report);}//reportSum=269;}
-*/
-//leo
+
 unsigned long currentMillisGMPD=myMillis;
 if (currentMillisGMPD-last_millisGamePad>gamePad_periodo)
 {

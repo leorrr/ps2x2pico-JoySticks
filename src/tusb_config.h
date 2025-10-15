@@ -63,7 +63,7 @@
 #define CFG_TUH_HID                 16
 #define CFG_TUH_HID_EPIN_BUFSIZE    128 // default 64
 #define CFG_TUH_HID_EPOUT_BUFSIZE   128 // default 64
-#define CFG_TUH_XINPUT              1 // para usar con xinput_host 1 un mando 2 dos mandos, falta probar
+#define CFG_TUH_XINPUT              2 // para usar con xinput_host 1 un mando 2 dos mandos, falta probar
 
 
 

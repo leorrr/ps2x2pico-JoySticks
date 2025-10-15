@@ -125,3 +125,29 @@ IMPORTANTE: Ahora se da soporte a 2 tipos de PCB:
 202508312048_PCBCOMPATIBLE-destroyer_noOne-_ps2x2picoESPectrumKeyCodeBETA.uf2: Corrección de errores, firmware para usar con la PCB1 de leorrr, con PCB USB2PS2 de destroyer y con montaje de noOne. 
 
 202508312041_CROMS-PCB_ps2x2picoESPectrumKeyCodeBETA.uf2: Corrección de errores, problemas conocidos a veces  el emulador no coge el ratón, en ese caso realizar un hardReset del ESP32 pulsando F12.
+
+202510152115_PCBCOMPATIBLE-destroyer_noOne_ps2x2picoESPectrumKeyCode.uf2: Añadido soporte 2 jugador para mando xbox360, añadido limite para dos mandos usb, indistintamente si son USB gamepad o xbox360, es decir se pueden usar 2 xbox360
+2 gamepad USB o uno de cada, los joy db9 quedan igual DB9 1 jugador 1 y DB9 jugador 2, en los mandos usb, el primer mando en conectarse se le asignara jugador 1 y el segundo jugador 2, en Xbox360 se ilumina el led correspondiente, es posible usar los joy DB9 y los USB simultáneamente.
+	Testeado:
+		- Teclado: ok
+		- Gamepad1 USB: ok (joystick 1 en emulador ESPectrum) 
+		- Gamepad2 USB: ok (joystick 2 en emulador ESPectrum) 
+		- Ratón: ok
+		- Joystick1: ok (joystick 1 en emulador ESPectrum) 
+		- Joystick2: ok	(joystick 2 en emulador ESPectrum) 
+		- Gamepad1 X360: ok (joystick 1 en emulador ESPectrum)
+		- Gamepas2 X360: ok ((joystick 2 en emulador ESPectrum)
+
+									
+202510152135_CROMS-PCB_ps2x2picoESPectrumKeyCode.uf2: Añadido soporte 2 jugador para mando xbox360, añadido limite para dos mandos usb, indistintamente si son USB gamepad o xbox360, es decir se pueden usar 2 xbox360
+2 gamepad USB o uno de cada, los joy db9 quedan igual DB9 1 jugador 1 y DB9 jugador 2, en los mandos usb, el primer mando en conectarse se le asignara jugador 1 y el segundo jugador 2, en Xbox360 se ilumina el led correspondiente, es posible usar los joy DB9 y los USB simultáneamente.
+	Testeado:
+		- Teclado: ok
+		- Gamepad1 USB: ok (joystick 1 en emulador ESPectrum) 
+		- Gamepad2 USB: ok (joystick 2 en emulador ESPectrum) 
+		- Ratón: ok
+		- Joystick1: ok (joystick 1 en emulador ESPectrum) 
+		- Joystick2: ok	(joystick 2 en emulador ESPectrum) 
+		- Gamepad1 X360: ok (joystick 1 en emulador ESPectrum)
+		- Gamepas2 X360: ok ((joystick 2 en emulador ESPectrum)
+				 

@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <math.h>      // añadido por By Claude para poder usar la funcion abs() en el filtro de reposo de los mandos xinput
 #include "hardware/watchdog.h"
 #include "hardware/gpio.h"
 #include "bsp/board_api.h"
@@ -38,7 +38,7 @@
 #include "neopixel.h"
 #include "xinput_host.h"
 #include "ps2x360.h"
-
+static void print_utf16(uint16_t *temp_buf, size_t buf_len);
 //--------------------------------------------------------------------+
 // Para generar la fecha de compilacion by CHATGPT
 //--------------------------------------------------------------------+
@@ -77,7 +77,7 @@ const char *fecha_hora_build() {
 #define gamePad_periodo 50
 #define xinput_Periodo 50
 
-static void print_utf16(uint16_t *temp_buf, size_t buf_len);
+
 //void print_device_descriptor(tuh_xfer_t* xfer); // como no se usa en ninguna parte  lo desactivamos
 
 
@@ -114,14 +114,15 @@ int16_t removeNoise (int16_t valor) {
 
 
 int16_t gamepad360_report[7] = {0}; //aqui guardaremos el report del gamepad
-u8 gameMouseStick_report[3] = {0}; //aqui guardaremos el report del mouseStick tal vez tenga que ser int8_t pero asi funciona
+//u8 gameMouseStick_report[3] = {0}; //aqui guardaremos el report del mouseStick tal vez tenga que ser int8_t pero asi funciona
+u8 gameMouseStick_report[4] = {0}; //Corregido por Claude para poder enviar los botones del mouse y el stick en un solo report, 0 boton izquierdo, 1 boton derecho, 2 movimiento x, 3 movimiento y
 int mousebr=0;
 int mousebl=0;
 
 
 #define DEADZONESTICK 8000
 #define SCALE    32768.0f
-
+// reescrita por Claude para poder usarla en el filtro de reposo de los mandos xinput
 void process_stick_as_mouse(int16_t lx, int16_t ly)
 {
     int8_t dx = 0;
@@ -143,7 +144,52 @@ void process_stick_as_mouse(int16_t lx, int16_t ly)
 }
 
 
-//xinput_host____________________________________
+//--------------------------------------------------------------------+
+// Filtro de reposo XInput by Cluade
+// Un mando en reposo (sin botones, gatillos ni sticks fuera de la zona muerta) no
+// necesita que procesemos cada report. Solo procesamos el primer report de reposo
+// (para soltar lo que estuviera pulsado) y descartamos los siguientes iguales.
+// Se usan los mismos umbrales que el resto del codigo (ruido, DEADZONESTICK, gatillos>10).
+//--------------------------------------------------------------------+
+static bool x360_was_idle[8][4];
+#define X360_SLOT_OK(a, i) ((a) < 8 && (i) < 4)
+
+// Devuelve true si el mando está en reposo (sin botones, gatillos ni sticks fuera de la zona muerta)
+static bool x360_is_idle(const xinput_gamepad_t *p)
+{
+  return p->wButtons == 0 &&
+         p->bLeftTrigger <= 10 && p->bRightTrigger <= 10 &&
+         abs(p->sThumbLX) < ruido && abs(p->sThumbLY) < ruido && //stick izquierdo mando
+         //abs(p->sThumbRX) < DEADZONESTICK && abs(p->sThumbRY) < DEADZONESTICK; // misma version que la de abajo menos rebuscada
+         ((int64_t)p->sThumbRX * p->sThumbRX + (int64_t)p->sThumbRY * p->sThumbRY) <= (int64_t)DEADZONESTICK * DEADZONESTICK; // stick derecho raton, usando Pitágoras para calcular la distancia al centro
+}
+
+/* Misma version reescrita por Geminis parea entender como funciona, 
+//Función que determina si el mando de Xbox 360 está en reposo (Idle) 
+// Devuelve true si el mando está en reposo (sin botones, gatillos ni sticks fuera de la zona muerta)
+bool x360_is_idle(const x360_report_t* p, int16_t ruido, int16_t deadzone_stick) {
+    
+    // 1. Verificar Botones y Gatillos
+    if (p->wButtons != 0) return false;
+    if (p->bLeftTrigger > 10 || p->bRightTrigger > 10) return false;
+    
+    // 2. Joystick Izquierdo (Ejes separados)
+    if (abs(p->sThumbLX) >= ruido) return false;
+    if (abs(p->sThumbLY) >= ruido) return false;
+    
+    // 3. Joystick Derecho (Ejes separados, SIN Pitágoras)
+    if (abs(p->sThumbRX) >= deadzone_stick) return false;
+    if (abs(p->sThumbRY) >= deadzone_stick) return false;
+    
+    // Si ninguna condición anterior sacó al código de la función, el mando está quieto
+    return true;
+}
+
+*/
+
+
+
+
 
 //Since https://github.com/hathach/tinyusb/pull/2222, we can add in custom vendor drivers easily
 usbh_class_driver_t const* usbh_app_driver_get_cb(uint8_t* driver_count){
@@ -175,7 +221,17 @@ const xinput_gamepad_t *p = &xid_itf->pad;
         }
 
         if (xid_itf->connected && xid_itf->new_pad_data)
+        // --- filtro de reposo --- by Claude, comparamos el estado actual con el anterior y si no ha cambiado no procesamos el report
         {
+        bool x360_idle = x360_is_idle(p); // true si el mando esta en reposo
+        bool x360_slot = X360_SLOT_OK(dev_addr, instance);
+        
+        bool x360_changed = x360_slot ? (x360_idle != x360_was_idle[dev_addr][instance]) : true; //
+        if (x360_idle && !x360_changed) {
+            tuh_xinput_receive_report(dev_addr, instance); // reposo repetido: solo pedimos el siguiente
+            return; //
+        }
+
          
 // cargamos el report usb en el array gamepad360_report
         gamepad360_report[0] = p->wButtons;
@@ -196,7 +252,7 @@ const xinput_gamepad_t *p = &xid_itf->pad;
 
         //printf("gameMouseStick_report: %d %d %d\n", gameMouseStick_report[0], gameMouseStick_report[1], gameMouseStick_report[2]);
          ms_usb_receive(gameMouseStick_report); //se lo enviamos al ps2 a traves de esta funcion
-         gameMouseStick_report[0]=0; gameMouseStick_report[1]=0;gameMouseStick_report[2]=0; //reseteamos report del mouse a 0
+         gameMouseStick_report[0]=0; gameMouseStick_report[1]=0;gameMouseStick_report[2]=0; gameMouseStick_report[3]=0;  //reseteamos report del mouse a 0
 /*
 int sumReport=gamepad360_report[0]+gamepad360_report[1]+gamepad360_report[2]+gamepad360_report[3]+gamepad360_report[4];//+gamepad360_report[5]+gamepad360_report[6];
 #ifdef debugLeo
@@ -208,8 +264,10 @@ int sumReport=gamepad360_report[0]+gamepad360_report[1]+gamepad360_report[2]+gam
 // procesamos el resto de valores del report, solo si ha pasado el periodo establecido
 unsigned long currentMillisXinput=myMillis; // Guardamos el tiempo actual
 
-if (currentMillisXinput-last_millisXinput>xinput_Periodo)
+// un cambio reposo<->activo se procesa siempre, sin esperar al periodo (si no, se perderia la pulsacion o la suelta)
+if (x360_changed || currentMillisXinput-last_millisXinput>xinput_Periodo)
 {last_millisXinput=myMillis;
+if (x360_slot) x360_was_idle[dev_addr][instance] = x360_idle;
 
 
 //if (currentMillisXinput-last_millisXinput>xinput_Periodo){last_millisXinput=myMillis;

@@ -54,8 +54,8 @@
 //--------------------------------------------------------------------
 
 //#define CFG_TUH_ENUMERATION_BUFSIZE 256
-#define CFG_TUH_ENUMERATION_BUFSIZE 350 // para usar con xinput_host buffer mandos wireless
-
+//#define CFG_TUH_ENUMERATION_BUFSIZE 350 // para usar con xinput_host buffer mandos wireless, 350 no es suficiente, 512 si, Fix by Claude
+#define CFG_TUH_ENUMERATION_BUFSIZE 512 // para usar con xinput_host buffer mandos wireless Fix by Claude
 
 #define CFG_TUH_HUB                 2
 #define CFG_TUH_DEVICE_MAX          6

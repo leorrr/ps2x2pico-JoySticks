@@ -30,7 +30,7 @@
 #include "ps2in.h"
 ps2out ms_out;
 ps2in ms_in;
-
+extern u8 ps2out_locked;   // junto a los includes para test ms_task CLAUDE
 #ifndef MS_RATE_DEFAULT
   #define MS_RATE_HOST_CONTROL
   #define MS_RATE_DEFAULT 100
@@ -141,8 +141,10 @@ void ms_usb_receive(u8 const* report) {
   ms_dx += (s8)report[1];
   ms_dy += (s8)report[2];
   ms_dz += (s8)report[3];
+ #ifdef debugLeo
   //Leo ADD
   //printf("report mouse report[0]=%d, report[1]=%d, report[2]=%d, report[3]=%d \n",ms_db, ms_dx,ms_dy,ms_dz);
+ #endif 
 }
 
 void ms_receive(u8 byte, u8 prev_byte) {
@@ -210,8 +212,31 @@ void ms_receive(u8 byte, u8 prev_byte) {
   
   ms_send(0xfa);
 }
-
+/*/original
 bool ms_task() {
+  ps2out_task(&ms_out);
+  //ps2in_task(&ms_in, &ms_out);
+  return ms_streaming && !ms_out.busy;
+}
+*/
+bool ms_task() {
+  
+/* // by Claude para testear el bloqueo de la salida ps2 
+#ifdef debugLeo
+  static u32 dbg_t = 0;    // al principio de ms_task()
+  if (to_ms_since_boot(get_absolute_time()) - dbg_t >= 1000) {
+    dbg_t = to_ms_since_boot(get_absolute_time());
+
+     printf("MS: stream=%d busy=%d lock=%d qb=%d qp=%d rate=%d dx=%d dy=%d tx=%d irq=%d\n",
+       ms_streaming, ms_out.busy, ps2out_locked,
+       queue_get_level(&ms_out.qbytes), queue_get_level(&ms_out.qpacks),
+       ms_rate, ms_dx, ms_dy,
+       pio_sm_get_tx_fifo_level(ms_out.pio, ms_out.sm), pio_interrupt_get(ms_out.pio, ms_out.sm));      
+  }
+ #endif 
+ */ 
+ // by Claude para testear el bloqueo de la salida ps2
+
   ps2out_task(&ms_out);
   //ps2in_task(&ms_in, &ms_out);
   return ms_streaming && !ms_out.busy;

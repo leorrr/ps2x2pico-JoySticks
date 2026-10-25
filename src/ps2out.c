@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  *
  */
- 
+ #include "hardware/timer.h" // by Claude para corregir fallo bloqueo raton
 #include "ps2out.h"
 #include "ps2out.pio.h"
 
@@ -77,7 +77,12 @@ void ps2out_task(ps2out* this) {
   } else {
     this->busy &= 2;
   }
-  
+  //by Claude para reparar el bloqueo de la salida ps2 
+  // Si encolamos un byte y nunca vimos su aviso de "transmitiendo" (el bucle principal
+  // tardo mas de ~1 ms), busy se quedaria en 2 para siempre. Caduca a los 4 ms.
+  if(this->busy == 2 && (time_us_32() - this->busy_since) > 4000) this->busy = 0;
+  //by Claude para reparar el bloqueo de la salida ps2
+
   if(pio_interrupt_get(this->pio, this->sm + 4)) {
     if(this->sent > 0) this->sent--;
     pio_interrupt_clear(this->pio, this->sm + 4);
@@ -94,6 +99,9 @@ void ps2out_task(ps2out* this) {
         this->sent++;
         this->last_tx = pack[this->sent];
         this->busy |= 2;
+        //by Claude para testear el bloqueo de la salida ps2
+        this->busy_since = time_us_32();
+        //by Claude para testear el bloqueo de la salida ps2
         ps2out_locked = 160;
         pio_sm_put(this->pio, this->sm, ps2_frame(this->last_tx));
       }

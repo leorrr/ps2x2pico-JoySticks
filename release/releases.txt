@@ -150,4 +150,47 @@ IMPORTANTE: Ahora se da soporte a 2 tipos de PCB:
 		- Joystick2: ok	(joystick 2 en emulador ESPectrum) 
 		- Gamepad1 X360: ok (joystick 1 en emulador ESPectrum)
 		- Gamepas2 X360: ok ((joystick 2 en emulador ESPectrum)
+
+202610251634_PCBCOMPATIBLE-destroyer_noOne_ps2x2picoESPectrumKeyCode:
+Correcciones con la ayuda de Claude
+- ps2Gamepad.c: corregido error en liberación botón B, modificada detección de botones pulsados,
+ 	para detectar mas de uno a la vez.
+- ps2ms.c, ps2out.c, ps2out.h : correcciones para evitar bloqueo del ratón cuando lo estamos
+ 	emulando con el stick derecho del mando de xbox360.
+- tusb_config: aumentado el buffer para la recepción de los reports, ahora ya se detecta 
+	correctamente mi mando wireless xbox360 clónico.
+- ps2x2pico: añadido un sistema de detección de los mandos en reposo para no procesar 
+	procesar report vacíos, algunos mandos siempre están enviado report 
+	aunque no se pulse ninguna tecla.
+	Testeado:
+		- Teclado: ok
+		- Gamepad1 USB: ok (joystick 1 en emulador ESPectrum) 
+		- Gamepad2 USB: ok (joystick 2 en emulador ESPectrum) 
+		- Ratón: ok
+		- Joystick1: ok (joystick 1 en emulador ESPectrum) 
+		- Joystick2: ok	(joystick 2 en emulador ESPectrum) 
+		- Gamepad1 X360: ok (joystick 1 en emulador ESPectrum)
+		- Gamepas2 X360: ok ((joystick 2 en emulador ESPectrum)
+
+202610251637_CROMS-PCB_ps2x2picoESPectrumKeyCode:
+Correcciones con la ayuda de Claude
+- ps2Gamepad.c: corregido error en liberación botón B, modificada detección de botones pulsados,
+ 	para detectar mas de uno a la vez.
+- ps2ms.c, ps2out.c, ps2out.h : correcciones para evitar bloqueo del ratón cuando lo estamos
+ 	emulando con el stick derecho del mando de xbox360.
+- tusb_config: aumentado el buffer para la recepción de los reports, ahora ya se detecta 
+	correctamente mi mando wireless xbox360 clónico.
+- ps2x2pico: añadido un sistema de detección de los mandos en reposo para no procesar 
+	procesar report vacíos, algunos mandos siempre están enviado report 
+	aunque no se pulse ninguna tecla.
+	Testeado:
+		- Teclado: ok
+		- Gamepad1 USB: ok (joystick 1 en emulador ESPectrum) 
+		- Gamepad2 USB: ok (joystick 2 en emulador ESPectrum) 
+		- Ratón: ok
+		- Joystick1: ok (joystick 1 en emulador ESPectrum) 
+		- Joystick2: ok	(joystick 2 en emulador ESPectrum) 
+		- Gamepad1 X360: ok (joystick 1 en emulador ESPectrum)
+		- Gamepas2 X360: ok ((joystick 2 en emulador ESPectrum)
+
 				 

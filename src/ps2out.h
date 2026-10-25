@@ -41,6 +41,7 @@ typedef struct {
   u8 last_tx;
   u8 sent;
   u8 busy;
+  u32 busy_since;//by claude para reparar el bloqueo de la salida ps2
 } ps2out;
 
 void ps2out_init(ps2out* this, PIO pio, u8 data_pin, rx_callback rx);

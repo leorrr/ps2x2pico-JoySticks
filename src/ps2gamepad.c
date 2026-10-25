@@ -53,14 +53,15 @@ void readGamepad1(gamepadState *state,u8 const* report)
        state->down = (report[4])==255?1:0;
        state->left = (report[3])==0?1:0;
        state->right = (report[3])==255?1:0;
-       state->buttonA = (report[5]==47)?1:0;
-       state->buttonB = (report[5]==79)?1:0;
-       state->buttonX = (report[5]==31)?1:0;
-       state->ButtonY = (report[5]==143)?1:0;
-       state->select =(report[6]==16)?1:0;
-       state->start = (report[6]==32)?1:0;
-       state->Ltrigger = (report[6]==1)?1:0;
-       state->Rtrigger = (report[6]==2)?1:0;
+       //by claude sustuimos la igualdad por un and & en los botones para detectar si estan pulsados varios a la vez, y no solo uno
+       state->buttonA = (report[5] & 0x20)?1:0;
+       state->buttonB = (report[5] & 0x40)?1:0;
+       state->buttonX = (report[5] & 0x10)?1:0;
+       state->ButtonY = (report[5] & 0x80)?1:0;
+       state->select =(report[6] & 0x10)?1:0;
+       state->start = (report[6] & 0x20)?1:0;
+       state->Ltrigger = (report[6] & 0x01)?1:0;
+       state->Rtrigger = (report[6] & 0x02)?1:0;
 
 }
 
@@ -70,14 +71,14 @@ void readGamepad2(gamepadState *state,u8 const* report)
        state->down = (report[4])==255?1:0;
        state->left = (report[3])==0?1:0;
        state->right = (report[3])==255?1:0;
-       state->buttonA = (report[5]==47)?1:0;
-       state->buttonB = (report[5]==79)?1:0;
-       state->buttonX = (report[5]==31)?1:0;
-       state->ButtonY = (report[5]==143)?1:0;
-       state->select =(report[6]==16)?1:0;
-       state->start = (report[6]==32)?1:0;
-       state->Ltrigger = (report[6]==1)?1:0;
-       state->Rtrigger = (report[6]==2)?1:0;
+       state->buttonA = (report[5] & 0x20)?1:0;
+       state->buttonB = (report[5] & 0x40)?1:0;
+       state->buttonX = (report[5] & 0x10)?1:0;
+       state->ButtonY = (report[5] & 0x80)?1:0;
+       state->select =(report[6] & 0x10)?1:0;
+       state->start = (report[6] & 0x20)?1:0;
+       state->Ltrigger = (report[6] & 0x01)?1:0;
+       state->Rtrigger = (report[6] & 0x02)?1:0;
 
 }
 
@@ -111,7 +112,7 @@ if (gamePad1.buttonA==1 && gamePad1.lastButtonA==0){Esp_code_send(ESP_JOY1A,1);g
 
 //Boton B
 if (gamePad1.buttonB==1 && gamePad1.lastButtonB==1){Esp_code_send(ESP_JOY1B,1);} //si esta pulsado
-else if (gamePad1.buttonA==0 && gamePad1.lastButtonB==1){Esp_code_send(ESP_JOY1B,0);gamePad1.lastButtonB=0;}//si hemos soltado
+else if (gamePad1.buttonB==0 && gamePad1.lastButtonB==1){Esp_code_send(ESP_JOY1B,0);gamePad1.lastButtonB=0;}//si hemos soltado
 if (gamePad1.buttonB==1 && gamePad1.lastButtonB==0){Esp_code_send(ESP_JOY1B,1);gamePad1.lastButtonB=1;}//Lo acabamos de pulsar
 
 //Boton X
@@ -178,7 +179,7 @@ if (gamePad2.buttonA==1 && gamePad2.lastButtonA==0){Esp_code_send(ESP_JOY2A,1);g
 
 //Boton B
 if (gamePad2.buttonB==1 && gamePad2.lastButtonB==1){Esp_code_send(ESP_JOY2B,1);} //si esta pulsado
-else if (gamePad2.buttonA==0 && gamePad2.lastButtonB==1){Esp_code_send(ESP_JOY2B,0);gamePad2.lastButtonB=0;}//si hemos soltado
+else if (gamePad2.buttonB==0 && gamePad2.lastButtonB==1){Esp_code_send(ESP_JOY2B,0);gamePad2.lastButtonB=0;}//si hemos soltado
 if (gamePad2.buttonB==1 && gamePad2.lastButtonB==0){Esp_code_send(ESP_JOY2B,1);gamePad2.lastButtonB=1;}//Lo acabamos de pulsar
 
 //Boton X

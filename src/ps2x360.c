@@ -112,11 +112,25 @@ void readx360Pad1(x360PadState *state,int16_t const* report)
        state->ls_down=(report[4] < 0)?1:0;
        state->ls_left=(report[3] < 0)?1:0;
        state->ls_right=(report[3] > 0)?1:0;
-       state->rs_up=(report[5] > 9000)?1:0;
+       /*state->rs_up=(report[5] > 9000)?1:0;
        state->rs_down=(report[5] < -9000)?1:0;
        state->rs_left=(report[6] > 9000)?1:0;
-       state->rs_right=(report[6] < -9000)?1:0;
+       state->rs_right=(report[6] < -9000)?1:0;*/
+       //coregido por Claude para que funcione correctamente la lectura del stick derecho, ya que los ejes estaban invertidos
+       state->rs_up=(report[6] > 9000)?1:0;
+       state->rs_down=(report[6] < -9000)?1:0;
+       state->rs_left=(report[5] < -9000)?1:0;
+       state->rs_right=(report[5] > 9000)?1:0;
+       
+       
+       
        /*
+       
+       state->rs_up=(report[6] > 9000)?1:0;
+       state->rs_down=(report[6] < -9000)?1:0;
+       state->rs_left=(report[5] < -9000)?1:0;
+       state->rs_right=(report[5] > 9000)?1:0;
+       
        state->ls_up=(report[4] > DEADZONE)?1:0;
        state->ls_down=(report[4] < -DEADZONE)?1:0;
        state->ls_left=(report[3] < -DEADZONE)?1:0;
@@ -152,11 +166,23 @@ void readx360Pad2(x360PadState *state,int16_t const* report)
        state->ls_down=(report[4] < 0)?1:0;
        state->ls_left=(report[3] < 0)?1:0;
        state->ls_right=(report[3] > 0)?1:0;
-       state->rs_up=(report[5] > 0)?1:0;
+       /*state->rs_up=(report[5] > 0)?1:0;
        state->rs_down=(report[5] < 0)?1:0;
        state->rs_left=(report[6] > 0)?1:0;
-       state->rs_right=(report[6] < 0)?1:0;
+       state->rs_right=(report[6] < 0)?1:0;*/
+       //corregido por Claude para que funcione correctamente la lectura del stick derecho, ya que los ejes estaban invertidos
+       state->rs_up=(report[6] > 9000)?1:0;
+       state->rs_down=(report[6] < -9000)?1:0;
+       state->rs_left=(report[5] < -9000)?1:0;
+       state->rs_right=(report[5] > 9000)?1:0;
+
        /*
+
+       state->rs_up=(report[6] > 9000)?1:0;
+       state->rs_down=(report[6] < -9000)?1:0;
+       state->rs_left=(report[5] < -9000)?1:0;
+       state->rs_right=(report[5] > 9000)?1:0;
+
        state->ls_up=(report[4] > DEADZONE)?1:0;
        state->ls_down=(report[4] < -DEADZONE)?1:0;
        state->ls_left=(report[3] < -DEADZONE)?1:0;

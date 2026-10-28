@@ -14,7 +14,8 @@ PIO pio=pio1;
 
 void neopixel_init()
 {      
-  int sm= pio_claim_unused_sm(pio, true); //proporciona una stateMachine libre
+  //int sm= pio_claim_unused_sm(pio, true); //proporciona una stateMachine libre
+  sm= pio_claim_unused_sm(pio, true); //proporciona una stateMachine libre corregido, por Claude para evitar que se pierda la referencia de la stateMachine y se bloquee el programa
   uint offset = pio_add_program(pio, &ws2812_program);
   ws2812_program_init(pio, sm, offset, neopixel, 800000, true);
 }

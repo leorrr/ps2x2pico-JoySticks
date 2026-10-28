@@ -88,8 +88,8 @@ typedef struct {
 
 
 
-    void readx360pad1(x360PadState *state,int16_t const* report);
-    void readx360pad2(x360PadState *state,int16_t const* report);
+    void readx360Pad1(x360PadState *state,int16_t const* report);
+    void readx360Pad2(x360PadState *state,int16_t const* report);
     void x360Process1(int16_t myreport[]);
     void x360Process2(int16_t myreport[]);
 

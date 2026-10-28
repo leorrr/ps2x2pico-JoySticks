@@ -20,7 +20,7 @@
 #define joy2Fire 10  
 #define joy2Select 9  // Para usar con joyStick SEGA
 //--------------------------
-#ifdef PCB1 // PCB estandar 
+#ifdef COMPATIBLE_PCB // PCB estandar 
 #define joy2Start 1// Para usar con joyStick SEGA
 #endif
 

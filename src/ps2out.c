@@ -63,7 +63,8 @@ void ps2out_task(ps2out* this) {
   u8 pack[9];
   
   if(!queue_is_empty(&this->qbytes)) {
-    while(i < 9 && queue_try_remove(&this->qbytes, &byte)) {
+    //while(i < 9 && queue_try_remove(&this->qbytes, &byte)) { //Linea original de Dustin Hoffman
+    while(i < 8 && queue_try_remove(&this->qbytes, &byte)) { //Linea modificada por Claude para evitar desbordamiento de pila  En pruebas con el raton, si se encolan mas de 8 bytes, se desborda la pila y se bloquea el programa
       i++;
       pack[i] = byte;
     }

@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>      // añadido por By Claude para poder usar la funcion abs() en el filtro de reposo de los mandos xinput
 #include "hardware/watchdog.h"
 #include "hardware/gpio.h"
 #include "bsp/board_api.h"
@@ -652,7 +651,7 @@ char *pcbversion="Croms_PCB para usar con la placa PCB2 de leorrr ps2x2pico-JoyS
 
   while(1) {
 
-    // procesamos el report de los db9 cada 100ms, que serian unas 10 veces por segungo
+    // procesamos el report de los db9 cada 50ms, que serian unas 20 veces por segungo
     // para no sobrecargar el sistema
     unsigned long currentMillisDB9=myMillis;
     if (currentMillisDB9-last_millisDB9>db9_periodo){last_millisDB9=myMillis;db9Process();}

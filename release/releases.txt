@@ -193,4 +193,30 @@ Correcciones con la ayuda de Claude
 		- Gamepad1 X360: ok (joystick 1 en emulador ESPectrum)
 		- Gamepas2 X360: ok ((joystick 2 en emulador ESPectrum)
 
-				 
+202611011534_PCBCOMPATIBLE-destroyer_noOne_ps2x2picoESPectrumKeyCode:
+Añadido soporte para gamepad DB9 Sega 6 botones y Sega 3 botones, con ayuda de Claude
+Pequeña limpieza de código.
+	Testeado:
+		- Teclado: ok
+		- Gamepad1 USB: ok (joystick 1 en emulador ESPectrum) 
+		- Gamepad2 USB: ok (joystick 2 en emulador ESPectrum) 
+		- Ratón: ok
+		- Joystick1: ok (joystick 1 en emulador ESPectrum) SEGA 6 botones,SEGA 3 botones y Atari normal
+		- Joystick2: ok	(joystick 2 en emulador ESPectrum) SEGA 6 botones,SEGA 3 botones y Atari normal
+		- Gamepad1 X360: ok (joystick 1 en emulador ESPectrum)
+		- Gamepas2 X360: ok ((joystick 2 en emulador ESPectrum)
+
+202611011534_CROMS-PCB_ps2x2picoESPectrumKeyCode:
+Añadido soporte para gamepad DB9 Sega 6 botones y Sega 3 botones, con ayuda de Claude
+Pequeña limpieza de código.
+	Testeado:
+		- Teclado: ok
+		- Gamepad1 USB: ok (joystick 1 en emulador ESPectrum) 
+		- Gamepad2 USB: ok (joystick 2 en emulador ESPectrum) 
+		- Ratón: ok
+		- Joystick1: ok (joystick 1 en emulador ESPectrum) SEGA 6 botones,SEGA 3 botones y Atari normal
+		- Joystick2: ok	(joystick 2 en emulador ESPectrum) SEGA 6 botones,SEGA 3 botones y Atari normal
+		- Gamepad1 X360: ok (joystick 1 en emulador ESPectrum)
+		- Gamepas2 X360: ok ((joystick 2 en emulador ESPectrum)
+			 
+			 

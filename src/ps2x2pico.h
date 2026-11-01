@@ -46,9 +46,9 @@
 
 //Descomenntar lo que proceda y comomentar lo que no, una cosa o la otra
 
-#define COMPATIBLE_PCB //  pcb compatible, 3v from GPIO 13, pin 9 joy2 GPIO 1
+//#define COMPATIBLE_PCB //  pcb compatible, 3v from GPIO 13, pin 9 joy2 GPIO 1
 
-//#define CROMS_PCB // pcb personalizada, 3v from pin 3v Pico, pin 9 joy2 GPIO 13
+#define CROMS_PCB // pcb personalizada, 3v from pin 3v Pico, pin 9 joy2 GPIO 13
 
 //------------------
 

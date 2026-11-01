@@ -1,163 +1,105 @@
-/*
-//Este codigo inicializa el joystick db 9 y ejecuta la rutina de lectura de Joystick y mapea su correspondiente codigo
-//Codigo inspirado por  por chatgpt
-// Joy1
-#define joy1Up 2 
-#define joy1Down 3
-#define joy1Left 4 
-#define joy1Right 5 
-#define joy1Fire 6 
-#define joy1Select 7 // Para joyStick SEGA
-#define joy1Start 8 // Para joyStick SEGA
-
-//Joy2
-#define joy2Up 29 
-#define joy2Down 28
-#define joy2Left 27
-#define joy2Right 26 
-#define joy2Fire 10  
-#define joy2Select 9  // Para joyStick SEGA
-#define joy2Start 13  // Para joyStick SEGA
-
-*/
-
+// Lectura de los joysticks DB9 (Atari, Sega 3 botones y Sega 6 botones) y envio de los codigos ESPectrum.
+//
+// Como se distingue cada tipo (la Pico controla la linea SELECT, pin 7, y lee el resto):
+//   Sega:  con SELECT=0 las lineas Izq. y Der. bajan a 0 solas (su "firma"). El de 6 botones
+//          ademas pone a 0 las cuatro direcciones en el 3er pulso de SELECT.
+//   Atari: son solo interruptores, no responden a SELECT.
+//   Un Atari en reposo es igual a "nada conectado": solo se reconoce al pulsar algo.
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
-#include "hardware/timer.h"
-
-#include "scancodesets.h"
 #include "espectrumCodeSet.h"
-#include "neopixel.h"
 #include "DB9.h"
 
-// #define DEBOUNCE_DELAY_MS 50  // Retardo para anti-rebote en milisegundos
-/*
-// Estructura para manejar el estado del joystick
-typedef struct {
-    bool up;
-    bool down;
-    bool left;
-    bool right;
-    bool fire;
-    bool lastUp;
-    bool lastDown;
-    bool lastLeft;
-    bool lastRight;
-    bool lastFire;
-} JoystickState;
-*/
+// Pines de cada puerto: ARRIBA, ABAJO, IZQ., DER., pin 6, SELECT (pin 7), pin 9
+static const uint8_t PIN[2][7] = {
+    { joy1Up, joy1Down, joy1Left, joy1Right, joy1Fire, joy1Select, joy1Start },
+    { joy2Up, joy2Down, joy2Left, joy2Right, joy2Fire, joy2Select, joy2Start }
+};
 
-//inicializa los valores por defecto de la estructura, En DB9 como el pull up de los gpio estan activado
-//utilizamos logica inversa 1 desactivados , 0 para activados, para guardar el estado anterior
-// en el gamepad lo hacemos normal 0 para desactivado y 1 para activado
+// Codigo ESPectrum de cada boton, en el orden de los bits del mapa de botones:
+// ARRIBA ABAJO IZQ. DER. B C A START Z Y X MODE
+static const uint8_t ESP[2][12] = {
+    { ESP_JOY1UP, ESP_JOY1DOWN, ESP_JOY1LEFT, ESP_JOY1RIGHT, ESP_JOY1B, ESP_JOY1C,
+      ESP_JOY1A, ESP_JOY1START, ESP_JOY1Z, ESP_JOY1Y, ESP_JOY1X, ESP_JOY1MODE },
+    { ESP_JOY2UP, ESP_JOY2DOWN, ESP_JOY2LEFT, ESP_JOY2RIGHT, ESP_JOY2B, ESP_JOY2C,
+      ESP_JOY2A, ESP_JOY2START, ESP_JOY2Z, ESP_JOY2Y, ESP_JOY2X, ESP_JOY2MODE }
+};
 
+static int r[2][8];        // ultima lectura de cada puerto (SELECT alternando 1,0,1,0,...)
+static int tipo[2];        // tipo detectado en cada puerto: 6, 3, 1 o 0
+static unsigned antes[2];  // botones pulsados en la lectura anterior
 
-JoystickState joy1={1,1,1,1,1,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto
-JoystickState joy2={1,1,1,1,1,0,0,0,0,0}; //inicializamos la estrucutura con el valores por defecto
-
-
-
-//funcion para inicializar gpio's
-void setGpio (uint8_t gpio) {  gpio_init(gpio); gpio_set_dir(gpio, GPIO_IN);gpio_pull_up(gpio);}
-
-//funcion para inicializar gpio's
 void db9Init()
 {
-    setGpio(joy1Up);setGpio(joy1Down);setGpio(joy1Left);setGpio(joy1Right);setGpio(joy1Fire);//inicializa puerto joy 1
-    setGpio(joy2Up);setGpio(joy2Down);setGpio(joy2Left);setGpio(joy2Right);setGpio(joy2Fire);//inicializa puerto joy 2
+    for (int p = 0; p < 2; p++) {
+        for (int i = 0; i < 7; i++) {
+            if (i == 5) continue;                                  // SELECT se configura aparte
+            gpio_init(PIN[p][i]);
+            gpio_set_dir(PIN[p][i], GPIO_IN);
+            gpio_pull_up(PIN[p][i]);
+        }
+        gpio_init(PIN[p][5]);
+        gpio_put(PIN[p][5], 1);                                    // SELECT en reposo (alto)
+        gpio_set_dir(PIN[p][5], GPIO_OUT);
+    }
 }
 
-// Función para leer el estado del joystick 
-void read_joystick1(JoystickState *state) {
-   
-    // Leer el estado de cada botón 1 si no esta pulsado 0 si lo pulsamos
-    state->up = gpio_get(joy1Up);
-    state->down = gpio_get(joy1Down);
-    state->left = gpio_get(joy1Left);
-    state->right = gpio_get(joy1Right);
-    state->fire = gpio_get(joy1Fire);
+// Cambia SELECT, espera y devuelve las 6 lineas de datos (bit a 1 = linea a 0)
+static int lineas(int p, bool sel)
+{
+    gpio_put(PIN[p][5], sel);
+    sleep_us(20);
+    uint32_t g = ~gpio_get_all();
+    return ((g >> PIN[p][0]) & 1)      | ((g >> PIN[p][1]) & 1) << 1 | ((g >> PIN[p][2]) & 1) << 2 |
+           ((g >> PIN[p][3]) & 1) << 3 | ((g >> PIN[p][4]) & 1) << 4 | ((g >> PIN[p][6]) & 1) << 5;
 }
 
-void read_joystick2(JoystickState *state) {
-   
-    // Leer el estado de cada botón 1 si no esta pulsado 0 si lo pulsamos
-    state->up = gpio_get(joy2Up);
-    state->down = gpio_get(joy2Down);
-    state->left = gpio_get(joy2Left);
-    state->right = gpio_get(joy2Right);
-    state->fire = gpio_get(joy2Fire);
+// Lee el puerto p (0 o 1) y devuelve el tipo: 6 = Sega 6 botones, 3 = Sega 3 botones, 1 = Atari, 0 = nada
+static int detectar(int p)
+{
+    for (int i = 0; i < 8; i++) r[p][i] = lineas(p, i % 2 == 0);
+    gpio_put(PIN[p][5], 1);
+    if ((r[p][1] & 12) == 12 && (r[p][0] & 12) != 12) return (r[p][5] & 15) == 15 ? 6 : 3;
+    return (r[p][0] | r[p][1]) & 63 ? 1 : 0;
 }
 
-//Esta funcion actualizada el estado de los joysticks db9 , almacena los resultados en la estructura y a continuacion
-//los proceso para enviar los codigos correspondientes a la placa ESP32
+int db9Tipo(int puerto)
+{
+    return tipo[puerto - 1];
+}
+
+// Lee los dos joysticks y envia a la placa ESP32 los codigos de los botones que han cambiado
 void db9Process()
 {
-    read_joystick1(&joy1);
-    //printf("Joystick1: UP=%d, DOWN=%d, LEFT=%d, RIGHT=%d, FIRE=%d\n",  joy1.up, joy1.down, joy1.left,joy1.right, joy1.fire);}
-    read_joystick2(&joy2);
-    //printf("Joystick2: UP=%d, DOWN=%d, LEFT=%d, RIGHT=%d, FIRE=%d\n",  joy2.up, joy2.down, joy2.left,joy2.right, joy2.fire);}
-    //if ((joy1.fire==0) || (joy1.up==0) || (joy1.down==0)||(joy1.lastDown==0)||(joy1.right==0)){verde;}
-//Procesado Joy1
-//----------------------------------------------------------------------------------------------------------------------
-//disparo boton B
-if (joy1.fire==0 && joy1.lastFire==1){/*kb_send_key(0x2b, 1, 0);*/Esp_code_send(ESP_JOY1A,1);}   //si ya  esta pulsado       
-else if (joy1.fire==1 && joy1.lastFire==1){/*kb_send_key(0x2b, 0, 0);*/Esp_code_send(ESP_JOY1A,0);joy1.lastFire=0;}// lo hemos soltado hacem0s el release
-if (joy1.fire==0 && joy1.lastFire==0){/*kb_send_key(0x2b, 1, 0);*/Esp_code_send(ESP_JOY1A,1);joy1.lastFire=1;}//lo acabamos de pulsar
+    for (int p = 0; p < 2; p++) {
+        int t;
+        if (tipo[p] == 1 && (r[p][0] = lineas(p, 1)) != 0) {
+            r[p][1] = r[p][0];                 // Atari con algo pulsado: solo se lee, sin tocar SELECT
+            t = 1;                             // (igual que la version anterior). El Atari no responde a SELECT
+        } else {
+            t = detectar(p);                   // en reposo se prueba la secuencia completa por si cambian el mando
+        }
+        if (t == 0 && tipo[p] == 1) t = 1;     // un Atari en reposo no se distingue de nada: lo conservamos
+        tipo[p] = t;
 
-//izquierda
-if (joy1.left==0 && joy1.lastLeft==1){/*kb_send_key(0x50, 1, 0);*/Esp_code_send(ESP_JOY1LEFT,1);} 
-else if (joy1.left==1 && joy1.lastLeft==1){/*kb_send_key(0x50, 0, 0);*/Esp_code_send(ESP_JOY1LEFT,0);joy1.lastLeft=0;}
-if (joy1.left==0 && joy1.lastLeft==0){/*kb_send_key(0x50, 1, 0);*/Esp_code_send(ESP_JOY1LEFT,1);joy1.lastLeft=1;}  
+        // Mapa de botones, un bit por boton: ARRIBA ABAJO IZQ. DER. B C A START Z Y X MODE
+        unsigned m = 0;
+        if (t == 1)                            // Atari: fuego -> A, segundo boton -> B
+            m = (r[p][0] & 15) | ((r[p][0] & 0x10) << 2) | ((r[p][0] & 0x20) >> 1);
+        else if (t >= 3)                       // Sega: direcciones, B, C, A y Start
+            m = (r[p][0] & 0x3F) | (((r[p][1] >> 4) & 3) << 6);
+        if (t == 6)                            // Sega 6 botones: Z, Y, X y Mode
+            m |= (r[p][6] & 15) << 8;
 
-//Derecha
-if (joy1.right==0 && joy1.lastRight==1){/*kb_send_key(0x4f, 1, 0);*/Esp_code_send(ESP_JOY1RIGHT,1);} 
-else if (joy1.right==1 && joy1.lastRight==1){/*kb_send_key(0x4f, 0, 0);*/Esp_code_send(ESP_JOY1RIGHT,0);joy1.lastRight=0;}
-if (joy1.right==0 && joy1.lastRight==0){/*kb_send_key(0x4f, 1, 0);*/Esp_code_send(ESP_JOY1RIGHT,1);joy1.lastRight=1;}  
-
-
-//arriba
-if (joy1.up==0 && joy1.lastUp==1){/*kb_send_key(0x52, 1, 0);*/Esp_code_send(ESP_JOY1UP,1);} 
-else if (joy1.up==1 && joy1.lastUp==1){/*kb_send_key(0x52, 0, 0);*/Esp_code_send(ESP_JOY1UP,0);joy1.lastUp=0;}
-if (joy1.up==0 && joy1.lastUp==0){/*kb_send_key(0x52, 1, 0);*/Esp_code_send(ESP_JOY1UP,1);joy1.lastUp=1;}  
- 
-
-//abajo
-if (joy1.down==0 && joy1.lastDown==1){/*kb_send_key(0x51, 1, 0);*/Esp_code_send(ESP_JOY1DOWN,1);} 
-else if (joy1.down==1 && joy1.lastDown==1){/*kb_send_key(0x51, 0, 0);*/Esp_code_send(ESP_JOY1DOWN,0);joy1.lastDown=0;}
-if (joy1.down==0 && joy1.lastDown==0){/*kb_send_key(0x51, 1, 0);*/Esp_code_send(ESP_JOY1DOWN,1);joy1.lastDown=1;}  
-//----------------------------------------------------------------------------------------------------------------------
-
-//Procesado Joy2
-//----------------------------------------------------------------------------------------------------------------------
-//disparo boton B
-if (joy2.fire==0 && joy2.lastFire==1){/*kb_send_key(0x2b, 1, 0);*/Esp_code_send(ESP_JOY2A,1);}   //si ya  esta pulsado       
-else if (joy2.fire==1 && joy2.lastFire==1){/*kb_send_key(0x2b, 0, 0);*/Esp_code_send(ESP_JOY2A,0);joy2.lastFire=0;}// lo hemos soltado hacem0s el release
-if (joy2.fire==0 && joy2.lastFire==0){/*kb_send_key(0x2b, 1, 0);*/Esp_code_send(ESP_JOY2A,1);joy2.lastFire=1;}//lo acabamos de pulsar
-
-//izquierda
-if (joy2.left==0 && joy2.lastLeft==1){/*kb_send_key(0x50, 1, 0);*/Esp_code_send(ESP_JOY2LEFT,1);} 
-else if (joy2.left==1 && joy2.lastLeft==1){/*kb_send_key(0x50, 0, 0);*/Esp_code_send(ESP_JOY2LEFT,0);joy2.lastLeft=0;}
-if (joy2.left==0 && joy2.lastLeft==0){/*kb_send_key(0x50, 1, 0);*/Esp_code_send(ESP_JOY2LEFT,1);joy2.lastLeft=1;}  
-
-//Derecha
-if (joy2.right==0 && joy2.lastRight==1){/*kb_send_key(0x4f, 1, 0);*/Esp_code_send(ESP_JOY2RIGHT,1);} 
-else if (joy2.right==1 && joy2.lastRight==1){/*kb_send_key(0x4f, 0, 0);*/Esp_code_send(ESP_JOY2RIGHT,0);joy2.lastRight=0;}
-if (joy2.right==0 && joy2.lastRight==0){/*kb_send_key(0x4f, 1, 0);*/Esp_code_send(ESP_JOY2RIGHT,1);joy2.lastRight=1;}  
-
-
-//arriba
-if (joy2.up==0 && joy2.lastUp==1){/*kb_send_key(0x52, 1, 0);*/Esp_code_send(ESP_JOY2UP,1);} 
-else if (joy2.up==1 && joy2.lastUp==1){/*kb_send_key(0x52, 0, 0);*/Esp_code_send(ESP_JOY2UP,0);joy2.lastUp=0;}
-if (joy2.up==0 && joy2.lastUp==0){/*kb_send_key(0x52, 1, 0);*/Esp_code_send(ESP_JOY2UP,1);joy2.lastUp=1;}  
- 
-
-//abajo
-if (joy2.down==0 && joy2.lastDown==1){/*kb_send_key(0x51, 1, 0);*/Esp_code_send(ESP_JOY2DOWN,1);} 
-else if (joy2.down==1 && joy2.lastDown==1){/*kb_send_key(0x51, 0, 0);*/Esp_code_send(ESP_JOY2DOWN,0);joy2.lastDown=0;}
-if (joy2.down==0 && joy2.lastDown==0){/*kb_send_key(0x51, 1, 0);*/Esp_code_send(ESP_JOY2DOWN,1);joy2.lastDown=1;}  
-//----------------------------------------------------------------------------------------------------------------------
-
-
-//sleep_ms(80);
-
+        for (int i = 0; i < 12; i++) {
+            bool pulsado = (m >> i) & 1;
+            bool cambio  = pulsado != ((antes[p] >> i) & 1);
+            if (cambio || (DB9_REPETIR_PULSADO && pulsado))
+                Esp_code_send(ESP[p][i], pulsado);
+        }
+#ifdef DB9_DEBUG
+        if (m != antes[p]) printf("DB9 joy%d tipo=%d r0=%02x r1=%02x botones=%03x\n", p + 1, t, r[p][0], r[p][1], m);
+#endif
+        antes[p] = m;
+    }
 }

@@ -112,34 +112,11 @@ void readx360Pad1(x360PadState *state,int16_t const* report)
        state->ls_down=(report[4] < 0)?1:0;
        state->ls_left=(report[3] < 0)?1:0;
        state->ls_right=(report[3] > 0)?1:0;
-       /*state->rs_up=(report[5] > 9000)?1:0;
-       state->rs_down=(report[5] < -9000)?1:0;
-       state->rs_left=(report[6] > 9000)?1:0;
-       state->rs_right=(report[6] < -9000)?1:0;*/
-       //coregido por Claude para que funcione correctamente la lectura del stick derecho, ya que los ejes estaban invertidos
        state->rs_up=(report[6] > 9000)?1:0;
        state->rs_down=(report[6] < -9000)?1:0;
        state->rs_left=(report[5] < -9000)?1:0;
        state->rs_right=(report[5] > 9000)?1:0;
-       
-       
-       
-       /*
-       
-       state->rs_up=(report[6] > 9000)?1:0;
-       state->rs_down=(report[6] < -9000)?1:0;
-       state->rs_left=(report[5] < -9000)?1:0;
-       state->rs_right=(report[5] > 9000)?1:0;
-       
-       state->ls_up=(report[4] > DEADZONE)?1:0;
-       state->ls_down=(report[4] < -DEADZONE)?1:0;
-       state->ls_left=(report[3] < -DEADZONE)?1:0;
-       state->ls_right=(report[3] > DEADZONE)?1:0;
-       state->rs_up=(report[5] > DEADZONE)?1:0;
-       state->rs_down=(report[5] < -DEADZONE)?1:0;
-       state->rs_left=(report[6] > DEADZONE)?1:0;
-       state->rs_right=(report[6] < -DEADZONE)?1:0;*/
-
+    
 }
 
 void readx360Pad2(x360PadState *state,int16_t const* report)
@@ -166,90 +143,18 @@ void readx360Pad2(x360PadState *state,int16_t const* report)
        state->ls_down=(report[4] < 0)?1:0;
        state->ls_left=(report[3] < 0)?1:0;
        state->ls_right=(report[3] > 0)?1:0;
-       /*state->rs_up=(report[5] > 0)?1:0;
-       state->rs_down=(report[5] < 0)?1:0;
-       state->rs_left=(report[6] > 0)?1:0;
-       state->rs_right=(report[6] < 0)?1:0;*/
-       //corregido por Claude para que funcione correctamente la lectura del stick derecho, ya que los ejes estaban invertidos
        state->rs_up=(report[6] > 9000)?1:0;
        state->rs_down=(report[6] < -9000)?1:0;
        state->rs_left=(report[5] < -9000)?1:0;
        state->rs_right=(report[5] > 9000)?1:0;
 
-       /*
-
-       state->rs_up=(report[6] > 9000)?1:0;
-       state->rs_down=(report[6] < -9000)?1:0;
-       state->rs_left=(report[5] < -9000)?1:0;
-       state->rs_right=(report[5] > 9000)?1:0;
-
-       state->ls_up=(report[4] > DEADZONE)?1:0;
-       state->ls_down=(report[4] < -DEADZONE)?1:0;
-       state->ls_left=(report[3] < -DEADZONE)?1:0;
-       state->ls_right=(report[3] > DEADZONE)?1:0;
-       state->rs_up=(report[5] > DEADZONE)?1:0;
-       state->rs_down=(report[5] < -DEADZONE)?1:0;
-       state->rs_left=(report[6] > DEADZONE)?1:0;
-       state->rs_right=(report[6] < -DEADZONE)?1:0;*/
 
 }
 //void x360Process1(u16 const* report)
 void x360Process1(int16_t myreport[])
 
 { 
-/*
-        if (myreport[3] > DEADZONE)        printf("Stick Izq → \n");
-        else if (myreport[3]< -DEADZONE)  printf("Stick Izq ←\n");
 
-        if (myreport[4] > DEADZONE)        printf("Stick Izq ↑ %d\n",myreport[4]);
-        else if (myreport[4] < -DEADZONE)  printf("Stick Izq ↓ %d\n",myreport[4]);
-
-        // --- Stick derecho ---
-        if (myreport[5] > DEADZONE)        printf("Stick Der →\n");
-        else if (myreport   [5] < -DEADZONE)  printf("Stick Der ←\n");
-
-        if (myreport[6] > DEADZONE)        printf("Stick Der ↑\n");
-        else if (myreport[6] < -DEADZONE)  printf("Stick Der ↓\n");
-
-        // --- Gatillos ---
-        if (myreport[1] > 10)              printf("Trigger Izq presionado (%d)\n", myreport[1]);
-        if (myreport[2] > 10)              printf("Trigger Der presionado (%d)\n", myreport[2]);
-
-        uint16_t btn = myreport[0];
-        // --- Botones ---
-        if (btn & XINPUT_GAMEPAD_A)      printf("Botón A\n");
-        if (btn & XINPUT_GAMEPAD_B)      printf("Botón B\n");
-        if (btn & XINPUT_GAMEPAD_X)      printf("Botón X\n");
-        if (btn & XINPUT_GAMEPAD_Y)      printf("Botón Y\n");
-
-        if (btn & XINPUT_GAMEPAD_LEFT_SHOULDER)  printf("Botón LB\n");
-        if (btn & XINPUT_GAMEPAD_RIGHT_SHOULDER) printf("Botón RB\n");
-
-        if (btn & XINPUT_GAMEPAD_BACK)   printf("Botón Back\n");
-        if (btn & XINPUT_GAMEPAD_START)  printf("Botón Start\n");
-
-        if (btn & XINPUT_GAMEPAD_LEFT_THUMB)  printf("Stick Izq presionado\n");
-        if (btn & XINPUT_GAMEPAD_RIGHT_THUMB) printf("Stick Der presionado\n");
-
-        if (btn & XINPUT_GAMEPAD_DPAD_UP)    printf("DPad ↑\n");
-        if (btn & XINPUT_GAMEPAD_DPAD_DOWN)  printf("DPad ↓\n");
-        if (btn & XINPUT_GAMEPAD_DPAD_LEFT)  printf("DPad ←\n");
-        if (btn & XINPUT_GAMEPAD_DPAD_RIGHT) printf("DPad →\n");
-      //printf("report0(Buttons): %04x, report1(BLT): %02x, report2(BRT): %02x, report3(LX): %d, report4(LY): %d, report5(RX): %d report6(RY): %d \n",report[0],report[1],report[2],report[3],report[4],report[5],report[6]);
-    /*   if (report[0] & 0x1000) printf("You are pressing A\n");
-        // --- Stick izquierdo ---
-       if (report[3] > DEADZONE)      printf("Stick Izq →\n");
-        else if (report[3] < -DEADZONE) printf("Stick Izq ←\n");
-
-       if (report[4] > DEADZONE)      printf("Stick Izq ↑\n");
-        else if (report[4] < -DEADZONE) printf("Stick Izq ↓\n");
-  
-        // --- Stick derecho ---
-        if (report[5] > DEADZONE)      printf("Stick Der →\n");
-        else if (report[5]< -DEADZONE) printf("Stick Der ←\n");
-
-        if (report[6] > DEADZONE)      printf("Stick Der ↑\n");
-        else if (report[6] < -DEADZONE) printf("Stick Der ↓\n"); */
 //printf("report0(Buttons): %04x, report1(BLT): %02x, report2(BRT): %02x, report3(LX): %d, report4(LY): %d, report5(RX): %d report6(RY): %d \n",myreport[0],myreport[1],myreport[2],myreport[3],myreport[4],myreport[5],myreport[6]);
        readx360Pad1(&x360Pad1,myreport);
 
@@ -338,30 +243,13 @@ if (x360Pad1.Rshoulder==1 && x360Pad1.lastRshoulder==1){Esp_code_send(ESP_JOY1Z,
 else if (x360Pad1.Rshoulder==0 && x360Pad1.lastRshoulder==1){Esp_code_send(ESP_JOY1Z,0);x360Pad1.lastRshoulder=0;}//si hemos soltado
 if (x360Pad1.Rshoulder==1 && x360Pad1.lastRshoulder==0){Esp_code_send(ESP_JOY1Z,1);x360Pad1.lastRshoulder=1;}//Lo acabamos de pulsar
 
-/*//emula el raton con el stick derecho y los botones del raton con los triggers
-if (x360Pad1.Ltrigger>50){myx360Mouse[0]|=leftButton;} //boton izquierdo
-if (x360Pad1.Rtrigger>50){myx360Mouse[0]|=rightButton;} //boton derecho
-if (x360Pad1.rs_left==1){myx360Mouse[1]=255;}
-if (x360Pad1.rs_right==1){myx360Mouse[1]=0;}
-if (x360Pad1.rs_up==1){myx360Mouse[2]=255;}
-if (x360Pad1.rs_down==1){myx360Mouse[2]=0;}
-//printf("Mouse: %d %d %d\n", myx360Mouse[0], myx360Mouse[1], myx360Mouse[2]);
-//ms_usb_receive(myx360Mouse);
-
-//myx360Mouse[0]=0;myx360Mouse[1]=0;myx360Mouse[2]=0; //reseteamos el raton*/
-
 }
 
 void x360Process2(int16_t myreport[])
 
  { 
-      // return;
-
-//        readx360Pad2
           readx360Pad2(&x360Pad2,myreport);
-     
-
-
+  
 //arriba
 
 if (x360Pad2.d_up==1 && x360Pad2.lastd_up==1){Esp_code_send(ESP_JOY2UP,1);} //si esta pulsado

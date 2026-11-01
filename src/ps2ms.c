@@ -30,7 +30,6 @@
 #include "ps2in.h"
 ps2out ms_out;
 ps2in ms_in;
-extern u8 ps2out_locked;   // junto a los includes para test ms_task CLAUDE
 #ifndef MS_RATE_DEFAULT
   #define MS_RATE_HOST_CONTROL
   #define MS_RATE_DEFAULT 100

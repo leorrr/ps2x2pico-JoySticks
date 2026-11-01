@@ -33,7 +33,9 @@ Cuando la vi pensé que lastima no aprovechar los pines que sobran.... y este es
  - El DB9 1 al joystick 1 en emulador ESPectrum.
  - El DB9 2 al joystick 2 en emulador ESPectrum.
 
-Pendiente dar soporte para gamepad de sega de tres y seis botones al igual que el proyecto de  **David Carrion** (  **https://github.com/dacarsoft/DB9_2_Keyboard** ) o el fork del mismo de **Antonio Taimaron**, PowaJoy ( **https://github.com/hash6iron/PowaJoy**),
+Soprte de Joysticks norma Atari, Gamepad de Sega de 6 botones y Gamepad de Sega de 3 botones
+
+![DB9 Support](./images/DB9_support.jpg)
 
 Añadido soporte para GamePad USB imitación  Nintendo Snes ( HID\VID_0079&PID_0011 )
 
@@ -61,4 +63,7 @@ Copiar el fichero  .uf2 situado en el directorio release en la raiz del Rp2040 Z
 
 **Problemas conocidos:** A veces el emulador no pilla el ratón, en ese caso asegurarse que estan las opciones correctas elegidas en el emulador **"F1, Opciones, Otro, segundo disp. PS2, Ratón [*]"**  y **"F1, Opciones, Otro, Ratón, Kempston [*]"** acto seguido realizar un Reset al  ESP32 **"F1,Resetear, Resetear ESP32 [F12]"**
 
-**LeoCroms@2025**
+### **LeoCroms@2026**
+
+### Gracias a todos los que ha hecho posible este proyecto, NoOne por ps2x2pico, Destroyer por  USB2PS2 y inspirarme con su pcb, a David Carrion y Antonio Taimarón por sus respectivos proyecto ESPjoy y PowaJoy, que marcaron el camino a seguir y  Anthropic por poner a disposición de la comunidad su excelente IA Cluade, sin la cual habria tardado bastante mas en acabar el soporte para gamepad de Sega, Y por supuesto a Victor Iborra y David Crespo desarrolladores del emulador ESPectrum, sin cual este proyecto no tendria ningun sentido.
+### Un abrazo a todos

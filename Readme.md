@@ -65,5 +65,5 @@ Copiar el fichero  .uf2 situado en el directorio release en la raiz del Rp2040 Z
 
 ### **LeoCroms@2026**
 
-### Gracias a todos los que ha hecho posible este proyecto, NoOne por ps2x2pico, Destroyer por  USB2PS2 y inspirarme con su pcb, a David Carrion y Antonio Taimarón por sus respectivos proyecto ESPjoy y PowaJoy, que marcaron el camino a seguir y  Anthropic por poner a disposición de la comunidad su excelente IA Cluade, sin la cual habria tardado bastante mas en acabar el soporte para gamepad de Sega, Y por supuesto a Victor Iborra y David Crespo desarrolladores del emulador ESPectrum, sin cual este proyecto no tendria ningun sentido.
+### Gracias a todos los que ha hecho posible este proyecto, NoOne por ps2x2pico, Destroyer por  USB2PS2 y inspirarme con su pcb,a Ryan Wendland por su TinyUSB Xinput driver,  a David Carrion y Antonio Taimarón por sus respectivos proyecto ESPjoy y PowaJoy, que marcaron el camino a seguir y  Anthropic por poner a disposición de la comunidad su excelente IA Cluade, sin la cual habria tardado bastante mas en acabar el soporte para gamepad de Sega, Y por supuesto a Victor Iborra y David Crespo desarrolladores del emulador ESPectrum, sin cual este proyecto no tendria ningun sentido.
 ### Un abrazo a todos
